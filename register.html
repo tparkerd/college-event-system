@@ -42,9 +42,16 @@
                     First Name: <br> <input type="text" name="fname"> <br><br>
                     Last Name: <br> <input type="text" name="lname"> <br><br>
                     Student ID: <br></be><input type="text" name="student_id"> <br><br>
-                    University: <br> <input type="text" name="university"> <br><br>
+                    University: <br>
+                    <select name="universities">
+                        <option value="ucf">UCF</option>
+                        <option value="fsu">FSU</option>
+                        <option value="uf">UF</option>
+                    </select>
+                    <br><br>
                     E-mail: <br> <input type="email" name="email"> <br> <br>
                     Password: <br> <input type="text" name="password"> <br><br>
+                    <input type="submit" value="Submit">
 
         </form>
 
@@ -68,31 +75,10 @@
         </ul>
     </div>
 
-    <footer id="myFooter">
-        <div class="w3-container w3-theme-l2">
-            <h4>Footer</h4>
-        </div>
 
-        <div class="w3-container w3-theme-l1">
-            <p>Powered by <a href="http://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-        </div>
-    </footer>
 
     <!-- END MAIN -->
 </div>
-
-<!--<script>
-    // Script to open and close the sidenav
-    function w3_open() {
-        document.getElementById("mySidenav").style.display = "block";
-        document.getElementById("myOverlay").style.display = "block";
-    }
-
-    function w3_close() {
-        document.getElementById("mySidenav").style.display = "none";
-        document.getElementById("myOverlay").style.display = "none";
-    }
-</script>-->
 
 </body>
 </html>
