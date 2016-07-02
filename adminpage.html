@@ -48,33 +48,38 @@
 
     <div class="w3-row w3-padding-64">
         <div class="w3-twothird w3-container">
-            <h1 class="w3-text-teal">Register</h1>
+            <h1 class="w3-text-teal">Admin Page</h1>
             <p>
-                <form action="sql.php" method="post">
-                    <w3-label for="fname">First Name: </w3-label>
-                    <input type="text" id="fname" name=firstname> <br><br>
+                <br><h1>Pending RSO Approvals</h1><br>
 
-                    <w3-label for="lname"> Last Name: </w3-label>
-                    <input type="text" id="lname" name="lastname"> <br><br>
-
-                    <w3-label for="id">Student ID: </w3-label>
-                    <input type="text" id="id" name="studentid"> <br><br>
-
-
-                    <w3-label  for="email"> E-mail: </w3-label>
-                    <input type="email" id="email" name="email"> <br> <br>
-
-                    <w3-label  for="password"> Password: </w3-label>
-                    <input type="text" id="password" name="pword"> <br><br>
-
-                    <w3-label for="universities"> University: </w3-label>
-                    <select id="universities" name="universities">
-                        <option value="ucf">UCF</option>
-                        <option value="fsu">FSU</option>
-                        <option value="uf">UF</option>
-                    </select>
-                    <br><br>
-                    <input type="submit" value="Submit">
+                <b>RSO Name:</b> <br>
+                <b>Description of RSO:</b> <br>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum
+                dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+            <p>
+                <br><b>Students involved: </b><br>
+                Admin,
+                Student1,
+                Student2,
+                Student3,
+                Student4,
+                Student5
+                <br><br>
+                <input type="radio" name="approve" value="approve"> Approve<br>
+                <input type="radio" name="deny" value="deny"> Deny<br>
+            </p>
+            <p>
+                <br><h1>Pending Memberships</h1><br>
+                <b>Student name: </b> <br>
+            <p>
+            <br>
+                <input type="radio" name="approve" value="approve"> Approve<br>
+                <input type="radio" name="deny" value="deny"> Deny<br>
+            <br><br>
+                <br><br>
+                <input type="submit" value="Submit">
                 </form>
 
             </p>
@@ -86,6 +91,24 @@
 
 
     <!-- END MAIN -->
+</div>
+
+
+<!-- Pagination -->
+<div class="w3-center w3-padding-64">
+    <ul class="w3-pagination">
+        <li><a class="w3-black" href="#">1</a></li>
+        <li><a class="w3-hover-black" href="#">2</a></li>
+        <li><a class="w3-hover-black" href="#">3</a></li>
+        <li><a class="w3-hover-black w3-hide-small" href="#">4</a></li>
+        <li><a class="w3-hover-black w3-hide-small" href="#">5</a></li>
+        <li><a class="w3-hover-black" href="#">»</a></li>
+    </ul>
+</div>
+
+
+
+<!-- END MAIN -->
 </div>
 
 </body>
