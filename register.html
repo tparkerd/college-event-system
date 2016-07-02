@@ -2,7 +2,7 @@
 <html>
 <title>W3.CSS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+<link rel="stylesheet" href="css/w3.css">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-theme-black.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -38,20 +38,31 @@
             <h1 class="w3-text-teal">Register</h1>
             <p>
                 <form>
-                    First Name: <br> <input type="text" name="fname"> <br><br>
-                    Last Name: <br> <input type="text" name="lname"> <br><br>
-                    Student ID: <br></be><input type="text" name="student_id"> <br><br>
-                    University: <br>
-                    <select name="universities">
+                    <w3-label for="fname">First Name: </w3-label>
+                    <input type="text" id="fname" name=firstname> <br><br>
+
+                    <w3-label for="lname"> Last Name: </w3-label>
+                    <input type="text" id="lname" name="lastname"> <br><br>
+
+                    <w3-label for="id">Student ID: </w3-label>
+                    <input type="text" id="id" name="studentid"> <br><br>
+
+
+                    <w3-label  for="email"> E-mail: </w3-label>
+                    <input type="email" id="email"> <br> <br>
+
+                    <w3-label  for="password"> Password: </w3-label>
+                    <input type="text" id="password"> <br><br>
+
+                    <w3-label for="universities"> University: </w3-label>
+                    <select id="universities" name="universities">
                         <option value="ucf">UCF</option>
                         <option value="fsu">FSU</option>
                         <option value="uf">UF</option>
                     </select>
                     <br><br>
-                    E-mail: <br> <input type="email" name="email"> <br> <br>
-                    Password: <br> <input type="text" name="password"> <br><br>
-                    <input type="submit" value="Submit">
 
+                    <input type="submit" value="Submit">
         </form>
 
             </p>
