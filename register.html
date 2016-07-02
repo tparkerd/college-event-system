@@ -50,7 +50,7 @@
         <div class="w3-twothird w3-container">
             <h1 class="w3-text-teal">Register</h1>
             <p>
-                <form>
+                <form action="sql.php" method="post">
                     <w3-label for="fname">First Name: </w3-label>
                     <input type="text" id="fname" name=firstname> <br><br>
 
@@ -62,10 +62,10 @@
 
 
                     <w3-label  for="email"> E-mail: </w3-label>
-                    <input type="email" id="email"> <br> <br>
+                    <input type="email" id="email" name="email"> <br> <br>
 
                     <w3-label  for="password"> Password: </w3-label>
-                    <input type="text" id="password"> <br><br>
+                    <input type="text" id="password" name="pword"> <br><br>
 
                     <w3-label for="universities"> University: </w3-label>
                     <select id="universities" name="universities">
