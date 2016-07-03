@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<!--
+	Synchronous by TEMPLATED
+    templated.co @templatedco
+    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+<head>
+	<title>College Events</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+	<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+	<script src="js/skel.min.js"></script>
+	<script src="js/skel-panels.min.js"></script>
+	<script src="js/init.js"></script>
+	<noscript>
+		<link rel="stylesheet" href="css/skel-noscript.css" />
+		<link rel="stylesheet" href="css/style.css" />
+	</noscript>
+	<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+	<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+</head>
+<body>
+<div id="wrapper">
+
+	<!-- Header -->
+	<div id="header">
+		<div class="container">
+
+			<!-- Logo -->
+			<div id="logo">
+				<h1><a href="#">College Events</a></h1>
+			</div>
+
+			<!-- Nav -->
+			<nav id="nav">
+				<ul>
+					<li><a href="index.html">Homepage</a></li>
+					<li><a href="register.html">Register</a></li>
+					<li class="active"><a href="create_event.html">Create Event</a></li>
+					<li><a href="twocolumn2.html">Search Events</a></li>
+					<li><a href="onecolumn.html">Student Organizations</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	<!-- /Header -->
+
+
+	<div id="page">
+		<div class="container">
+			<div class="row">
+				<div class="12u">
+					<section id="content">
+						<header>
+							<h2 class="centered">Create An Event</h2>
+						</header>
+
+						<form class="pure-form centered">
+							<fieldset>
+								<legend>Request to create an event</legend>
+								<input type="text" id="ename" placeholder="Event Name">
+								<br><br>
+								<input type="date" id="date" placeholder="date">
+								<br><br>
+								<input style="width:190px" type="time" id="time" placeholder="time">
+								<br><br>
+								<input type="text" placeholder="Location">
+								<br><br>
+								<label style="vertical-align: middle;" for="public" class="pure-radio vertical">
+									<input id="public" type="radio" name="event_type" value="public" checked>
+									Public Event
+								</label>
+								<label style="vertical-align: middle;" for="private" class="pure-radio vertical">
+									<input id="private" type="radio" name="event_type" value="private" checked>
+									Private Event
+								</label>
+								<br><br>
+								<select style="width:170px"; id="university" placeholder="University">
+									<option value>University</option>
+									<option value="ucf">University of Central Florida</option>
+									<option value="fsu">Florida State University</option>
+									<option value="uf">University of Florida</option>
+								</select>
+								<br>
+								<button type="submit" class="small-button">Submit</button>
+							</fieldset>
+						</form>
+					</section>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<!-- Copyright -->
+	<div id="copyright">
+		<div class="container">
+			Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+		</div>
+	</div>
+
+</div>
+</body>
+</html>
