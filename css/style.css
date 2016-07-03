@@ -30,6 +30,9 @@
 	.centered{
 		text-align:center;
 	}
+	.radio-left{
+		text-align:left
+	}
 	p {
 		margin-bottom: 1.5em;
 		line-height: 180%;
@@ -673,6 +676,8 @@ ul.style3 .first {
 	display: inline-block;
 	margin-top: 2em;
 	padding: 1em 1.5em;
+	width: 600px;
+	height: 150px;
 	background: #323338;
 	border-radius: 4px;
 	text-decoration: none;
@@ -687,11 +692,11 @@ ul.style3 .first {
 	cursor: pointer;
 }
 
-			.button:hover
-			{
-				background: #1f2023;
-				color: #FFF !important;
-			}
+.button:hover
+{
+	background: #1f2023;
+	color: #FFF !important;
+}
 
 .button-style {
 	margin: 20px 0px 20px 0px;
