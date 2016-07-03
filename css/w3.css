@@ -98,10 +98,10 @@ ul.w3-ul li:last-child{border-bottom:none}
 .w3-input-group,.w3-group{margin-top:24px;margin-bottom:24px}
 .w3-input{padding:8px;display:block;border:none;border-bottom:1px solid #808080;width:100%}
 
-.w3-label{color:#009688; display: inline-block;
+.w3-label{color:#009688; display:block;
     float: left;
     clear: left;
-    width: 250px;
+    width: 500px;
     text-align: right;  }
 input{display: inline-block;  float: left;}
 .w3-input:not(:valid)~.w3-validate{color:#f44336}
