@@ -4,12 +4,6 @@
     templated.co @templatedco
     Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
-<?php
-$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
-$sql="SELECT * FROM e WHERE event_date >= DATE(NOW()) LIMIT 3;";
-$sth=$dbh->prepare($sql);
-	$dbh->query($sth);
-?>
 
 <html>
 <head>
@@ -64,19 +58,27 @@ $sth=$dbh->prepare($sql);
 						<header>
 							<h2>Upcoming Events</h2>
 						</header>
+
 						<ul class="style3">
-							<li class="first">
-								<p class="date"><a href="#">Aug <b>26</b></a></p>
-								<p><a href="event_profile.php?eid=1">Spirit Splash </a><br> UCF Reflection Pond</p>
-							</li>
-							<li>
-								<p class="date"><a href="#">Sep <b>30</b></a></p>
-								<p><a href="#">Donec leo, vivamus fermentum nibh in augue praesent urna congue rutrum.</a></p>
-							</li>
-							<li>
-								<p class="date"><a href="#">Sep <b>27</b></a> </p>
-								<p><a href="#">Donec leo, vivamus fermentum nibh in augue praesent urna congue rutrum.</a></p>
-							</li>
+									<?php
+									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
+									$sql="SELECT * FROM e WHERE event_date >= DATE(NOW()) LIMIT 3";
+									$sth=$dbh->prepare($sql);
+									$sth->execute();
+									while($row = $sth->fetch(PDO::FETCH_ASSOC))
+									{
+										echo "<li>";
+										echo "<p class=\"date\"><a href=\"#\"><b>";
+										print $row['event_date'] . "\t";
+										echo "</b></a></p>";
+										echo '<p><a href=\"event_profile.php?eid=\"'.$row['eid'].'">';
+										print $row['event_name'] . "\t";
+										echo "</a>";
+										echo "<p>";
+										print "location will go here";
+										echo "</p></li>";
+									}
+									?>
 						</ul>
 					</section>
 				</div>

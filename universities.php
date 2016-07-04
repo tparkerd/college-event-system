@@ -90,11 +90,11 @@
 										$uni_name = $row['name'];
 										$address= $row['address'];
 										$img_url_1 = $row['imageURL1'];
-										$img_url_2 .$row['imageURL2'];
+										$img_url_2 = $row['imageURL2'];
 										$description = $row['description'];
 									}
 
-									$con=null;
+									$dbh=null;
 
 									?>
 									<div class="container">
