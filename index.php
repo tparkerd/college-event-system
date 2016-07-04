@@ -4,6 +4,7 @@
     templated.co @templatedco
     Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
+
 <html>
 <head>
 	<title>College Events</title>
@@ -39,11 +40,10 @@
 			<!-- Nav -->
 			<nav id="nav">
 				<ul>
-					<li class="active"><a href="index.html">Homepage</a></li>
-					<li><a href="register.html">Register</a></li>
-					<li><a href="twocolumn1.html">Create Event</a></li>
-					<li><a href="twocolumn2.html">Search Events</a></li>
-					<li><a href="onecolumn.html">Student Organizations</a></li>
+					<li class="active"><a href="index.php">Homepage</a></li>
+					<li><a href="create.php">Create</a></li>
+					<li><a href="search.php">Search</a></li>
+					<li><a href="universities.php">Universities</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -58,19 +58,27 @@
 						<header>
 							<h2>Upcoming Events</h2>
 						</header>
+
 						<ul class="style3">
-							<li class="first">
-								<p class="date"><a href="#">Aug <b>26</b></a></p>
-								<p><a href="#">Spirit Splash </a><br> UCF Reflection Pond</p>
-							</li>
-							<li>
-								<p class="date"><a href="#">Sep <b>30</b></a></p>
-								<p><a href="#">Donec leo, vivamus fermentum nibh in augue praesent urna congue rutrum.</a></p>
-							</li>
-							<li>
-								<p class="date"><a href="#">Sep <b>27</b></a> </p>
-								<p><a href="#">Donec leo, vivamus fermentum nibh in augue praesent urna congue rutrum.</a></p>
-							</li>
+									<?php
+									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
+									$sql="SELECT * FROM e WHERE event_date >= DATE(NOW()) LIMIT 3";
+									$sth=$dbh->prepare($sql);
+									$sth->execute();
+									while($row = $sth->fetch(PDO::FETCH_ASSOC))
+									{
+										echo "<li>";
+										echo "<p class=\"date\"><a href=\"#\"><b>";
+										print $row['event_date'] . "\t";
+										echo "</b></a></p>";
+										echo '<p><a href=\"event_profile.php?eid=\"'.$row['eid'].'">';
+										print $row['event_name'] . "\t";
+										echo "</a>";
+										echo "<p>";
+										print "location will go here";
+										echo "</p></li>";
+									}
+									?>
 						</ul>
 					</section>
 				</div>
@@ -92,15 +100,20 @@
 						<form class="pure-form">
 							<fieldset>
 								<legend>See more events</legend>
-								<input type="email" placeholder="Email">
+								<input name="uemail" type="email" placeholder="Email">
 								<br><br>
-								<input type="password" placeholder="Password">
+								<input name="upass" type="password" placeholder="Password">
+								<br><br>
+								<a style="color:black;" href="register.php">Need to register?</a>
 								<br>
-								<button type="submit" class="small-button">Submit</button>
+								<button type="submit" name="btn-login" class="small-button">Submit</button>
 							</fieldset>
 						</form>
 					</section>
 
+				</div>
+
+				<div>
 
 				</div>
 			</div>
@@ -113,7 +126,6 @@
 	<!-- Copyright -->
 	<div id="copyright">
 		<div class="container">
-			Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
 		</div>
 	</div>
 

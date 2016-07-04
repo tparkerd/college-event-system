@@ -39,11 +39,10 @@
 			<!-- Nav -->
 			<nav id="nav">
 				<ul>
-					<li><a href="index.html">Homepage</a></li>
-					<li class="active"><a href="register.html">Register</a></li>
-					<li><a href="twocolumn1.html">Create Event</a></li>
-					<li><a href="twocolumn2.html">Search Events</a></li>
-					<li><a href="onecolumn.html">Student Organizations</a></li>
+					<li><a href="index.php">Homepage</a></li>
+					<li><a href="create.php">Create</a></li>
+					<li><a href="search.php">Search</a></li>
+					<li><a href="universities.php">Universities</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -63,24 +62,24 @@
 								<form class="pure-form centered">
 									<fieldset>
 										<legend>Register with us today to gain access to more events!</legend>
-										<input type="text" id="fname" placeholder="First Name">
+										<br><input type="text" id="txt_fname" style="width:25%;" placeholder="First Name">
 										<br><br>
-										<input type="text" id="lname" placeholder="Last Name">
+										<input type="text" id="txt_lname" style="width:25%;" placeholder="Last Name">
 										<br><br>
-										<input type="text" id="sid" placeholder="Student ID">
+										<input type="text" id="txt_sid" style="width:25%;" placeholder="Student ID">
 										<br><br>
-										<input type="email" placeholder="Email">
+										<input type="email" id="txt_umail" style="width:25%;" placeholder="Email">
 										<br><br>
-										<input type="password" placeholder="Password">
+										<input type="password" id="txt_upass" style="width:25%;" placeholder="Password">
 										<br><br>
-										<select style="width:170px"; id="university" placeholder="University">
+										<select style="width:25%;padding-bottom:5px;" id="txt_uname" placeholder="University">
 											<option value>University</option>
 											<option value="ucf">University of Central Florida</option>
 											<option value="fsu">Florida State University</option>
 											<option value="uf">University of Florida</option>
 										</select>
 										<br>
-										<button type="submit" class="small-button">Submit</button>
+										<button name="btn-signup" type="submit" class="small-button">Submit</button>
 									</fieldset>
 								</form>
 							</section>
@@ -94,7 +93,6 @@
 			<!-- Copyright -->
 			<div id="copyright">
 				<div class="container">
-					Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
 				</div>
 			</div>
 			

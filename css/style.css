@@ -30,6 +30,9 @@
 	.centered{
 		text-align:center;
 	}
+	.radio-left{
+		text-align:left
+	}
 	p {
 		margin-bottom: 1.5em;
 		line-height: 180%;
@@ -667,11 +670,33 @@ ul.style3 .first {
 			cursor: pointer;
 		}
 
-			.button:hover
-			{
-				background: #1f2023;
-				color: #FFF !important;
-			}
+
+.button-large{
+	position: relative;
+	display: inline-block;
+	margin-top: 2em;
+	padding: 1em 1.5em;
+	width: 600px;
+	height: 150px;
+	background: #323338;
+	border-radius: 4px;
+	text-decoration: none;
+	text-transform: uppercase;
+	font-size: 2em;
+	color: #FFF;
+	-moz-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	-webkit-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	-o-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	-ms-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	cursor: pointer;
+}
+
+.button:hover
+{
+	background: #1f2023;
+	color: #FFF !important;
+}
 
 .button-style {
 	margin: 20px 0px 20px 0px;
@@ -757,4 +782,4 @@ ul.style3 .first {
 	{
 		padding: 5em 0em;
 		background: #FFF
-	}	
+	}
