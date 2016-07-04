@@ -4,6 +4,8 @@
     templated.co @templatedco
     Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
+
+
 <html>
 	<head>
 		<title>College Events</title>
@@ -23,8 +25,32 @@
 		</noscript>
 		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+		<script>
+
+			function getUniversityProfile(name) {
+				if (name == "") {
+					name="University of Central Florida"
+				}
+					if (window.XMLHttpRequest) {
+						// code for IE7+, Firefox, Chrome, Opera, Safari
+						xmlhttp = new XMLHttpRequest();
+					} else {
+						// code for IE6, IE5
+						xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+
+					xmlhttp.onreadystatechange = function () {
+						if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+							document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+						}
+					};
+					xmlhttp.open("GET", "/college-event-website/get_university.php?q="+name,true);
+					xmlhttp.send();
+			}
+		</script>
 	</head>
 	<body>
+
 		<div id="wrapper">
 			
 			<!-- Header -->
@@ -48,20 +74,61 @@
 				</div>
 			</div>
 			<!-- /Header -->
-			
+
 			<div id="page">
 				<div class="container">
 					<div class="row">
-						<div class="9u skel-cell-important">
-							<section id="content" >
-								<header>
-									<h2>University Profile</h2>
-								</header>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
-								</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
-								</p>
+						<div class="9u skel-cell-important" >
+							<section id="section-content">
+								<div id="txtHint">
+									<?php
+									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
+									$sql="SELECT * FROM Universities WHERE name='University of Central Florida'";
+									$sth=$dbh->prepare($sql);
+									$dbh->query($sth);
+									foreach ($dbh->query($sql) as $row) {
+										$uni_name = $row['name'];
+										$address= $row['address'];
+										$img_url_1 = $row['imageURL1'];
+										$img_url_2 .$row['imageURL2'];
+										$description = $row['description'];
+									}
+
+									$con=null;
+
+									?>
+									<div class="container">
+										<div class="row">
+											<div class="3u">
+												<section id="box1">
+													<header>
+														<h2>University Info</h2>
+													</header>
+													<ul class="style3">
+														<li class="first">
+															<p class="date">Address</p>
+															<p><?php print $address?></p>
+														</li>
+														<li>
+															<p class="date"><a href="#">10.03.2012</a></p>
+															<p><a href="#">Pellentesque erat erat, tincidunt in, eleifend, malesuada bibendum. Suspendisse sit amet  in eros bibendum condimentum. </a> </p>
+														</li>
+													</ul>
+												</section>
+											</div>
+											<div class="6u">
+												<section id="box2">
+													<header>
+														<h2><?php print $uni_name ?></h2>
+													</header>
+													<div> <a href="#" class="image full"><img src="<?php echo $img_url_1?>" alt=""></a> </div>
+													<p><?php print $description?></p>
+												</section>
+											</div>
+
+										</div>
+									</div>
+								</div>";
 							</section>
 						</div>
 						<div class="3u">
@@ -74,11 +141,17 @@
 									<fieldset>
 										<legend>Add a university to your profile to see more events</legend>
 										<br><br>
-										<select style="width:220px"; id="university" placeholder="University">
-											<option value>University</option>
-											<option value="ucf">University of Central Florida</option>
-											<option value="fsu">Florida State University</option>
-											<option value="uf">University of Florida</option>
+											<?php
+												$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
+												$sql ='SELECT name from Universities';
+												$stmt = $dbh->prepare($sql);
+												$stmt->execute();
+												$unames=$stmt->fetchAll();
+											?>
+										<select onchange="getUniversityProfile(this.options[this.selectedIndex].value)" style="width:260px;padding-bottom:5px" id="university" placeholder="University">
+											<?php foreach($unames as $uname): ?>
+												<option value="<?= $uname['name']; ?>"><?= $uname['name']; ?></option>
+											<?php endforeach; ?>
 										</select>
 										<br><br>
 										<button type="submit" class="small-button">Join</button>
