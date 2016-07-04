@@ -19,7 +19,7 @@ foreach ($dbh->query($sql) as $row) {
     $description = $row['description'];
 }
 
-$con=null;
+$dbh=null;
 
 ?>
 

@@ -1,3 +1,21 @@
+<?php $event_id=intval($_GET['eid']);
+$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
+$sql="SELECT * FROM e WHERE eid='".$event_id."'";
+$sth=$dbh->prepare($sql);
+$dbh->query($sth);
+foreach ($dbh->query($sql) as $row) {
+	$event_name = $row['event_name'];
+	$event_time = $row['event_time'];
+	$event_date = $row['event_date'];
+	$event_desc = $row['description'];
+	$event_category = $row['event_category'];
+	$contact_email = $row['contact_email'];
+	$contact_phone = $row['contact_phone'];
+	$event_rating = $row['rating'];
+}
+
+$dbh=null;?>
+
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -64,10 +82,14 @@
 						<div class="9u skel-cell-important">
 							<section id="content">
 								<header>
-									<h2>Event Information</h2>
+									<h2><?php print $event_name;?></h2>
 								</header>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
+								<p><b>Date: </b><?php print $event_date;?></p>
+								<p>Time: <?php print $event_time;?></p>
+								<p>Location: (not in db yet, relationship) </p>
+								<p>Contact Information: <br> E-mail: <?php print $contact_email;?>
+								<br> Phone: <?php print $contact_phone;?></p>
+								<p><?php print $event_desc;?></p>
 								</p>
 								<br>
 								<div class="fb-share-button" data-href="http://localhost:63342/college-event-website/event_profile.html?_ijt=uaupj23v5ohnmh2o24o8e9g2dr" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A63342%2Fcollege-event-website%2Fevent_profile.html%3F_ijt%3Duaupj23v5ohnmh2o24o8e9g2dr&amp;src=sdkpreparse">Share</a></div>
