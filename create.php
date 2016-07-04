@@ -38,10 +38,10 @@
             <!-- Nav -->
             <nav id="nav">
                 <ul>
-                    <li><a href="index.html">Homepage</a></li>
-                    <li  class="active"><a href="create.html">Create</a></li>
-                    <li><a href="search.html">Search</a></li>
-                    <li><a href="universities.html">Universities</a></li>
+                    <li><a href="index.php">Homepage</a></li>
+                    <li  class="active"><a href="create.php">Create</a></li>
+                    <li><a href="search.php">Search</a></li>
+                    <li><a href="universities.php">Universities</a></li>
                 </ul>
             </nav>
         </div>
@@ -57,13 +57,13 @@
                         <header>
                             <h2 class="centered">Get Involved</h2>
                         </header>
-                        <form class="centered" action="create_event.html">
+                        <form class="centered" action="create_event.php">
                         <button type="submit" class="button-large">Create Event</button><br><br>
                         </form>
-                        <form class="centered" action="create_rso.html">
+                        <form class="centered" action="create_rso.php">
                         <button type="submit" class="button-large">Create Student Organization</button><br><br>
                         </form>
-                        <form class="centered" action="create_university.html">
+                        <form class="centered" action="create_university.php">
                             <button type="submit" class="button-large">Create University Profile</button>
                         </form>
                     </section>

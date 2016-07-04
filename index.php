@@ -39,10 +39,10 @@
 			<!-- Nav -->
 			<nav id="nav">
 				<ul>
-					<li class="active"><a href="index.html">Homepage</a></li>
-					<li><a href="create.html">Create</a></li>
-					<li><a href="search.html">Search</a></li>
-					<li><a href="universities.html">Universities</a></li>
+					<li class="active"><a href="index.php">Homepage</a></li>
+					<li><a href="create.php">Create</a></li>
+					<li><a href="search.php">Search</a></li>
+					<li><a href="universities.php">Universities</a></li>
 				</ul>
 			</nav>
 		</div>
@@ -60,7 +60,7 @@
 						<ul class="style3">
 							<li class="first">
 								<p class="date"><a href="#">Aug <b>26</b></a></p>
-								<p><a href="event_profile.html">Spirit Splash </a><br> UCF Reflection Pond</p>
+								<p><a href="event_profile.php">Spirit Splash </a><br> UCF Reflection Pond</p>
 							</li>
 							<li>
 								<p class="date"><a href="#">Sep <b>30</b></a></p>
@@ -95,7 +95,7 @@
 								<br><br>
 								<input type="password" placeholder="Password">
 								<br><br>
-								<a style="color:black;" href="register.html">Need to register?</a>
+								<a style="color:black;" href="register.php">Need to register?</a>
 								<br>
 								<button type="submit" class="small-button">Submit</button>
 							</fieldset>

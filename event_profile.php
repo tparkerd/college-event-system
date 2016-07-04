@@ -48,10 +48,10 @@
 					<!-- Nav -->
 					<nav id="nav">
 						<ul>
-							<li><a href="index.html">Homepage</a></li>
-							<li class="active"><a href="create.html">Create</a></li>
-							<li><a href="search.html">Search</a></li>
-							<li><a href="universities.html">Universities</a></li>
+							<li><a href="index.php">Homepage</a></li>
+							<li class="active"><a href="create.php">Create</a></li>
+							<li><a href="search.php">Search</a></li>
+							<li><a href="universities.php">Universities</a></li>
 						</ul>
 					</nav>
 				</div>

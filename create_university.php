@@ -39,10 +39,10 @@
 					<!-- Nav -->
 					<nav id="nav">
 						<ul>
-							<li><a href="index.html">Homepage</a></li>
-							<li class="active"><a href="create.html">Create</a></li>
-							<li><a href="search.html">Search</a></li>
-							<li><a href="universities.html">Universities</a></li>
+							<li><a href="index.php">Homepage</a></li>
+							<li class="active"><a href="create.php">Create</a></li>
+							<li><a href="search.php">Search</a></li>
+							<li><a href="universities.php">Universities</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -55,7 +55,7 @@
 						<div class="9u skel-cell-important">
 							<section id="content" >
 								<header>
-									<h2>Search Results</h2>
+									<h2>University Profile Guidelines</h2>
 								</header>
 								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
 								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
@@ -67,16 +67,19 @@
 						<div class="3u">
 							<section id="sidebar2">
 									<header style="text-align:center;">
-										<h2 class="centered">Find Organizations to Join</h2>
+										<h2 class="centered">Create University Profile</h2>
 									</header>
 
 								<form class="pure-form centered">
 									<fieldset>
-										<legend>Search for groups that you relate to</legend>
+										<legend>Request to create a profile for your university</legend>
+										<input type="text" name="university_name" placeholder="University Name">
 										<br><br>
-										<input type="text" name="university_name" placeholder="Organization Name">
-										<br><br>
-										<button type="submit" class="small-button">Search</button>
+										<input type="text" name="university_address" placeholder="Address"><br><br>
+										<input type="text" name="image1" placeholder="Image URL"><br><br>
+										<input type="text" name="image1" placeholder="Image URL"><br><br>
+										<textarea rows="8" placeholder="Enter your university description here." name="university_desc"></textarea><br><br>
+										<button type="submit" class="small-button">Submit</button>
 									</fieldset>
 								</form>
 							</section>

@@ -37,10 +37,10 @@
             <!-- Nav -->
             <nav id="nav">
                 <ul>
-                    <li><a href="index.html">Homepage</a></li>
-                    <li><a href="create.html">Create</a></li>
-                    <li class="active"><a href="search.html">Search</a></li>
-                    <li><a href="universities.html">Universities</a></li>
+                    <li><a href="index.php">Homepage</a></li>
+                    <li><a href="create.php">Create</a></li>
+                    <li class="active"><a href="search.php">Search</a></li>
+                    <li><a href="universities.php">Universities</a></li>
                 </ul>
             </nav>
         </div>
@@ -56,10 +56,10 @@
                         <header>
                             <h2 class="centered">Find Things that Interest You</h2>
                         </header>
-                        <form class="centered" action="search_events.html">
+                        <form class="centered" action="search_events.php">
                         <button type="submit" class="button-large">Search Events</button><br><br>
                         </form>
-                        <form class="centered" action="search_rso.html">
+                        <form class="centered" action="search_rso.php">
                         <button type="submit" class="button-large">Search Student Organizations</button><br><br>
                         </form>
                     </section>
