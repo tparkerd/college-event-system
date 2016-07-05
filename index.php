@@ -1,7 +1,3 @@
-<?php
-ob_start();
-session_start();
-?>
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -97,27 +93,24 @@ session_start();
 						</p>
 					</section>
 				</div>
-
-
 				<div class="3u">
 					<section id="sidebar2">
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<form class="pure-form" action="login_user.php/" method="POST">
+						<form class="pure-form" method="post">
 							<fieldset>
 								<legend>See more events</legend>
-								<input name="email" id="email" type="email" value="" placeholder="Email">
+								<input name="username" type="email" placeholder="Email">
 								<br><br>
-								<input name="password" id="password" type="password" value="" placeholder="Password">
+								<input name="password" type="password" placeholder="Password">
 								<br><br>
-								<a style="color:black;" name="reg_link" href="register.php">Need to register?</a>
+								<a style="color:black;" href="register.php">Need to register?</a>
 								<br>
-								<button type="submit" name="submit" value="submit" class="small-button">Submit</button>
+								<button type="submit" name="submit" class="small-button">Submit</button>
 							</fieldset>
 						</form>
 					</section>
-					</div>
 
 				</div>
 
