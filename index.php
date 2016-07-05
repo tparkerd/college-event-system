@@ -26,6 +26,7 @@
 	<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
 </head>
 <body>
+
 <div id="wrapper">
 
 	<!-- Header -->
@@ -97,16 +98,16 @@
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<form class="pure-form">
+						<form class="pure-form" method="post">
 							<fieldset>
 								<legend>See more events</legend>
-								<input name="uemail" type="email" placeholder="Email">
+								<input name="username" type="email" placeholder="Email">
 								<br><br>
-								<input name="upass" type="password" placeholder="Password">
+								<input name="password" type="password" placeholder="Password">
 								<br><br>
 								<a style="color:black;" href="register.php">Need to register?</a>
 								<br>
-								<button type="submit" name="btn-login" class="small-button">Submit</button>
+								<button type="submit" name="submit" class="small-button">Submit</button>
 							</fieldset>
 						</form>
 					</section>

@@ -85,7 +85,6 @@
 									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
 									$sql="SELECT * FROM Universities WHERE name='University of Central Florida'";
 									$sth=$dbh->prepare($sql);
-									$dbh->query($sth);
 									foreach ($dbh->query($sql) as $row) {
 										$uni_name = $row['name'];
 										$address= $row['address'];
