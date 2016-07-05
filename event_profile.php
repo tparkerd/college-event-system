@@ -2,7 +2,7 @@
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
 $sql="SELECT * FROM e WHERE eid='".$event_id."'";
 $sth=$dbh->prepare($sql);
-$dbh->query($sth);
+$dbh->query($sql);
 foreach ($dbh->query($sql) as $row) {
 	$event_name = $row['event_name'];
 	$event_time = $row['event_time'];
@@ -90,12 +90,11 @@ $dbh=null;?>
 								<p>Contact Information: <br> E-mail: <?php print $contact_email;?>
 								<br> Phone: <?php print $contact_phone;?></p>
 								<p><?php print $event_desc;?></p>
-								</p>
 								<br>
 								<div class="fb-share-button" data-href="http://localhost:63342/college-event-website/event_profile.html?_ijt=uaupj23v5ohnmh2o24o8e9g2dr" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A63342%2Fcollege-event-website%2Fevent_profile.html%3F_ijt%3Duaupj23v5ohnmh2o24o8e9g2dr&amp;src=sdkpreparse">Share</a></div>
 								<br><br>
 								<a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out this event:" data-size="large">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-							</section>
+								</section>
 							<br><br>
 							<section id="add_comment">
 								<header>
@@ -160,7 +159,7 @@ $dbh=null;?>
 											var marker = new google.maps.Marker({
 												position: myLatLng,
 												map: map,
-												title: 'Hello World!'
+												title: 'Event location'
 											});
 										}
 										google.maps.event.addDomListener(window, 'load', initialize);
@@ -168,7 +167,7 @@ $dbh=null;?>
 								</head>
 
 								<body>
-								<div id="googleMap" style="width:500px;height:380px;"></div>
+								<div id="googleMap" style="width:450px;height:380px;"></div>
 								</body>
 
 							</section>

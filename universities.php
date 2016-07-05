@@ -147,7 +147,7 @@
 												$stmt->execute();
 												$unames=$stmt->fetchAll();
 											?>
-										<select onchange="getUniversityProfile(this.options[this.selectedIndex].value)" style="width:260px;padding-bottom:5px" id="university" placeholder="University">
+										<select onchange="getUniversityProfile(this.value)" style="width:260px;padding-bottom:5px" id="university" placeholder="University">
 											<?php foreach($unames as $uname): ?>
 												<option value="<?= $uname['name']; ?>"><?= $uname['name']; ?></option>
 											<?php endforeach; ?>

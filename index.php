@@ -72,7 +72,7 @@
 										echo "<p class=\"date\"><a href=\"#\"><b>";
 										print $row['event_date'] . "\t";
 										echo "</b></a></p>";
-										echo '<p><a href=\"event_profile.php?eid=\"'.$row['eid'].'">';
+										echo '<p><a href="event_profile.php?eid='.$row['eid'].'">';
 										print $row['event_name'] . "\t";
 										echo "</a>";
 										echo "<p>";

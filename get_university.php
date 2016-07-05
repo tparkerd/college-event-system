@@ -10,12 +10,12 @@ $q = strval($_GET['q']);
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
 $sql="SELECT * FROM Universities WHERE name='".$q."'";
 $sth=$dbh->prepare($sql);
-$dbh->query($sth);
+$dbh->query($sql);
 foreach ($dbh->query($sql) as $row) {
     $uni_name = $row['name'];
 	$address= $row['address'];
 	$img_url_1 = $row['imageURL1'];
-	$img_url_2 .$row['imageURL2'];
+	$img_url_2 = $row['imageURL2'];
     $description = $row['description'];
 }
 
