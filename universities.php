@@ -29,7 +29,7 @@
 
 			function getUniversityProfile(name) {
 				if (name == "") {
-					name="University of Central Florida"
+					name='University of Central Florida';
 				}
 					if (window.XMLHttpRequest) {
 						// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -82,15 +82,16 @@
 							<section id="section-content">
 								<div id="txtHint">
 									<?php
-									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
-									$sql="SELECT * FROM Universities WHERE name='University of Central Florida'";
+									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+									$sql="SELECT * FROM university LIMIT 1";
 									$sth=$dbh->prepare($sql);
 									foreach ($dbh->query($sql) as $row) {
-										$uni_name = $row['name'];
+										$uni_name = $row['university_name'];
 										$address= $row['address'];
-										$img_url_1 = $row['imageURL1'];
-										$img_url_2 = $row['imageURL2'];
+										$img_url_1 = $row['picture_one'];
+										$img_url_2 = $row['picture_two'];
 										$description = $row['description'];
+										$num_students = $row['num_students;'];
 									}
 
 									$dbh=null;
@@ -141,15 +142,15 @@
 										<legend>Add a university to your profile to see more events</legend>
 										<br><br>
 											<?php
-												$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
-												$sql ='SELECT name from Universities';
+												$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+												$sql ='SELECT university_name from university';
 												$stmt = $dbh->prepare($sql);
 												$stmt->execute();
 												$unames=$stmt->fetchAll();
 											?>
 										<select onchange="getUniversityProfile(this.value)" style="width:260px;padding-bottom:5px" id="university" placeholder="University">
-											<?php foreach($unames as $uname): ?>
-												<option value="<?= $uname['name']; ?>"><?= $uname['name']; ?></option>
+											<?php foreach($unames as $uname):?>
+												<option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
 											<?php endforeach; ?>
 										</select>
 										<br><br>
