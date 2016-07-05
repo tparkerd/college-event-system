@@ -98,7 +98,7 @@
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<form class="pure-form" method="post">
+						<form class="pure-form" action="login_user.php" method="post">
 							<fieldset>
 								<legend>See more events</legend>
 								<input name="username" type="email" placeholder="Email">
