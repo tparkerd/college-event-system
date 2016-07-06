@@ -212,8 +212,7 @@ else
 									<h2>Event Guidelines</h2>
 								</header>
                                 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-                                <div id="map"></div><br>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
+                                <div id="map"></div><br><br>
 								</p>
 							</section>
 						</div>
@@ -252,7 +251,20 @@ else
 												<option value="public">Public Event</option>
 												<option value="private">Private Event</option>
 												<option value="RSO">RSO Event</option>
-											</select>
+											</select><br><br>
+                                            <select style="width:220px;" name="rso_name" id="rso_name">
+                                                <?php
+                                                $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+                                                $sql ="SELECT rso_name from creates_rso WHERE sid='".$_SESSION['id']."'";
+                                                $stmt = $dbh->prepare($sql);
+                                                $stmt->execute();
+                                                $unames=$stmt->fetchAll();
+                                                ?>
+                                                    <option value="" disabled selected>RSO Name, if RSO Event</option>
+                                                    <?php foreach($unames as $uname):?>
+                                                        <option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
+                                                    <?php endforeach; ?>
+                                            </select>
 											<br><br>
 											<input type="hidden" id="latitude" name="latitude" value="">
 											<input type="hidden" id="longitude" name="longitude" value="">
