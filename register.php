@@ -62,17 +62,17 @@
 								<form class="pure-form centered" action="create_user.php" method="POST">
 									<fieldset>
 										<legend>Register with us today to gain access to more events!</legend>
-										<br><input type="text" id="txt_fname" style="width:25%;" placeholder="First Name" required>
+										<br><input type="text" name="fname" style="width:25%;" placeholder="First Name" required>
 										<br><br>
-										<input type="text" id="txt_lname" style="width:25%;" placeholder="Last Name" required>
+										<input type="text" name="lname" style="width:25%;" placeholder="Last Name" required>
 										<br><br>
-										<input type="text" id="txt_sid" style="width:25%;" placeholder="Student ID" required>
+										<input type="text"  name="sid" style="width:25%;" placeholder="Student ID" required>
 										<br><br>
-										<input type="email" id="txt_umail" style="width:25%;" placeholder="Email" required>
+										<input type="email" name="email" style="width:25%;" placeholder="Email" required>
 										<br><br>
-										<input type="password" id="txt_upass" style="width:25%;" placeholder="Password" required>
+										<input type="password" name="password" style="width:25%;" placeholder="Password" required>
 										<br><br>
-										<select style="width:25%;padding-bottom:5px;" id="txt_uname" placeholder="University">
+										<select style="width:25%;padding-bottom:5px;" name="university" placeholder="University">
 											<option value>University</option>
 											<option value="ucf">University of Central Florida</option>
 											<option value="fsu">Florida State University</option>
