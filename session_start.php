@@ -96,4 +96,6 @@ if(isset($_SESSION['id']) && $_SESSION['id'] != '')
       // echo json_encode($data);
     }
 }
+
+header('location: index.php');
 ?>
