@@ -22,8 +22,8 @@ print $privacy."\n";
 print $contact_phone."\n";
 print $contact_email."\n";
 print $description."\n";
-print $latitude."\n";
-print $longitude."\n";
+print "latitude= ".$latitude."\n";
+print "longitude= ".$longitude."\n";
 /*$sql="INSERT INTO student VALUES (:sid, :fname, :lname, :email, :pword, :university)";
 $sth=$dbh->prepare($sql);
 if(!empty($_POST['university'])) {

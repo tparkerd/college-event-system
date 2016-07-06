@@ -40,7 +40,8 @@ else
                 padding: 0;
             }
             #map {
-                height: 560px;
+                height: 360px;
+                width:700px;
             }
             .controls {
                 margin-top: 10px;
@@ -95,14 +96,15 @@ else
 
         // This example requires the Places library. Include the libraries=places
         // parameter when you first load the API. For example:
-        // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
 
         function initAutocomplete() {
+            geocoder = new google.maps.Geocoder();
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: 28.6024, lng: -81.2001},
                 zoom: 13,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             });
+
 
             // Create the search box and link it to the UI element.
             var input = document.getElementById('pac-input');
@@ -124,6 +126,8 @@ else
                     return;
                 }
 
+
+
                 // Clear out the old markers.
                 markers.forEach(function(marker) {
                     marker.setMap(null);
@@ -131,8 +135,15 @@ else
                 markers = [];
 
                 // For each place, get the icon, name and location.
-                var bounds = new google.maps.LatLngBounds();
+                var bounds = new google.maps.LatLngBounds()
                 places.forEach(function(place) {
+                    var lat = place.geometry.location.lat();
+                    var lng = place.geometry.location.lng();
+                    document.getElementById("latitude").value = lat;
+                    document.getElementById("longitude").value = lng;
+
+                    console.log(lat);
+                    console.log(lng);
                     var icon = {
                         url: place.icon,
                         size: new google.maps.Size(71, 71),
@@ -146,17 +157,18 @@ else
                         map: map,
                         icon: icon,
                         title: place.name,
-                        position: place.geometry.location
-                    }));
+                        position: place.geometry.location,
+                }));
 
                     if (place.geometry.viewport) {
-                        // Only geocodes have viewport.
+                        // Only geocodes have viewport
                         bounds.union(place.geometry.viewport);
                     } else {
                         bounds.extend(place.geometry.location);
                     }
                 });
                 map.fitBounds(bounds);
+
             });
         }
 
@@ -195,12 +207,12 @@ else
 				<div class="container">
 					<div class="row">
 						<div class="9u skel-cell-important">
-							<section id="content" >
+							<section id="content">
 								<header>
 									<h2>Event Guidelines</h2>
 								</header>
                                 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-                                <div id="map"></div>
+                                <div id="map"></div><br>
 								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
 								</p>
 							</section>
@@ -219,7 +231,7 @@ else
 											<br><br>
 											<input style="width:220px;" type="time" name="time"  required>
 											<br><br>
-											<input type="text" style="width:220px;" name="location" placeholder="Location" required><br><br>
+											<input type="text" style="width:220px;" name="location" placeholder="Location Name" required><br><br>
 											<select style="width:220px;" name="university">
 												<option value="" disabled selected>University</option>
 												<option value="ucf">University of Central Florida</option>
@@ -242,8 +254,8 @@ else
 												<option value="RSO">RSO Event</option>
 											</select>
 											<br><br>
-											<input type="hidden" id="latitude" name="latitude">
-											<input type="hidden" id="longitude" name="longitude">
+											<input type="hidden" id="latitude" name="latitude" value="">
+											<input type="hidden" id="longitude" name="longitude" value="">
 											<input style="width:220px;" type="tel" name="contact_phone" placeholder="Contact Phone" required><br><br>
 											<input style="width:220px;" type="email" name="contact_email" placeholder="Contact E-mail" required><br><br>
 											<textarea style="width:220px;" rows="8" placeholder="Enter your event description here." name="description" required></textarea><br><br>
