@@ -1,3 +1,10 @@
+<?php
+$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+$sql ='IF EXISTS (SELECT * FROM Products WHERE id = ?)';
+$stmt = $dbh->prepare($sql);
+$stmt->execute();
+
+	?>
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -57,7 +64,6 @@
 								<header>
 									<h2>Event Guidelines</h2>
 								</header>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
 								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
 								</p>
 								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
@@ -69,24 +75,24 @@
 								<header style="text-align:center;">
 									<h2>Create Event</h2>
 								</header>
-									<form class="pure-form centered">
+									<form class="pure-form centered" action="insert_event.php" method="POST">
 										<fieldset>
 											<legend>Request to create an event</legend>
-											<input type="text" name="ename" placeholder="Event Name">
+											<input style="width:220px;" type="text" name="name" placeholder="Event Name" required>
 											<br><br>
-											<input type="date" name="edate" placeholder="date">
+											<input style="width:220px;"type="date" name="date" placeholder="date" required>
 											<br><br>
-											<input style="width:190px" type="time" name="etime" placeholder="time">
+											<input style="width:220px" type="time" name="time" placeholder="time" required>
 											<br><br>
-											<input type="text" name="elocation" placeholder="Location"><br><br>
-											<select style="width:190px" name="euniversity" placeholder="University">
+											<input type="text" style="width:220px;" name="location" placeholder="Location" required><br><br>
+											<select style="width:220px;" name="euniversity" placeholder="University">
 												<option value="" disabled selected>University</option>
 												<option value="ucf">University of Central Florida</option>
 												<option value="fsu">Florida State University</option>
 												<option value="uf">University of Florida</option>
 											</select>
 											<br><br>
-											<select style="width:190px" name="ecategory" placeholder="Event Category">
+											<select style="width:220px;" name="category" placeholder="Event Category" required>
 												<option value="" disabled selected>Event Category</option>
 												<option value="concert">Concert</option>
 												<option value="tech-talk">Tech Talk</option>
@@ -94,16 +100,16 @@
 												<option value="hackathon">Sporting Event</option>
 											</select>
 											<br><br>
-											<select style="width:190px" name="ecategory" placeholder="Event Type">
+											<select style="width:220px;" name="privacy" placeholder="Event Type" required>
 												<option value="" disabled selected>Event Type</option>
 												<option value="public">Public Event</option>
 												<option value="private">Private Event</option>
 												<option value="RSO">RSO Event</option>
 											</select>
 											<br><br>
-											<input type="tel" name="contact_phone" placeholder="Contact Phone"><br><br>
-											<input type="email" name="contact_email" placeholder="Contact E-mail"><br><br>
-											<textarea rows="8" placeholder="Enter your event description here." name="event_description"></textarea><br><br>
+											<input style="width:220px;" type="tel" name="contact_phone" placeholder="Contact Phone" required><br><br>
+											<input style="width:220px;" type="email" name="contact_email" placeholder="Contact E-mail" required><br><br>
+											<textarea style="width:220px;" rows="8" placeholder="Enter your event description here." name="description" required></textarea><br><br>
 											<button type="submit" class="small-button">Submit</button>
 										</fieldset>
 									</form>

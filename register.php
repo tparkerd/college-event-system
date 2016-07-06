@@ -72,11 +72,17 @@
 										<br><br>
 										<input type="password" name="password" style="width:25%;" placeholder="Password" required>
 										<br><br>
-										<select style="width:25%;padding-bottom:5px;" name="university" placeholder="University">
-											<option value>University</option>
-											<option value="ucf">University of Central Florida</option>
-											<option value="fsu">Florida State University</option>
-											<option value="uf">University of Florida</option>
+										<?php
+										$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+										$sql ='SELECT university_name from university';
+										$stmt = $dbh->prepare($sql);
+										$stmt->execute();
+										$unames=$stmt->fetchAll();
+										?>
+										<select style="width:25%;padding-bottom:5px" id="university" placeholder="University">
+											<?php foreach($unames as $uname):?>
+												<option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
+											<?php endforeach; ?>
 										</select>
 										<br>
 										<button name="btn-signup" type="submit" class="small-button">Submit</button>
