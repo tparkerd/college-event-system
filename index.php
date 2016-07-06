@@ -4,7 +4,6 @@
     templated.co @templatedco
     Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
-
 <html>
 <head>
 	<title>College Events</title>
@@ -98,7 +97,11 @@
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<form class="pure-form" action="login_user.php" method="post">
+						<?php session_start(); if(isset($_SESSION['id']) && $_SESSION['id'] != '') { echo $_SESSION['id'] . ' is logged in.<br>';  echo '<form action="session_stop.php" class="pure-form" method="post"> <input type="submit" value="Log out">';} else {
+
+						echo <<<EOD
+
+						<form action="session_start.php" method="post" class="pure-form" method="post">
 							<fieldset>
 								<legend>See more events</legend>
 								<input name="username" type="email" placeholder="Email">
@@ -110,6 +113,9 @@
 								<button type="submit" name="submit" class="small-button">Submit</button>
 							</fieldset>
 						</form>
+EOD;
+					} ?>
+
 					</section>
 
 				</div>

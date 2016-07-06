@@ -26,7 +26,6 @@
 	</head>
 	<body>
 		<div id="wrapper">
-			
 			<!-- Header -->
 			<div id="header">
 				<div class="container">
@@ -48,7 +47,7 @@
 				</div>
 			</div>
 			<!-- /Header -->
-			
+
 			<div id="page">
 				<div class="container">
 					<div class="row">
@@ -115,7 +114,7 @@
 						</div>
 					</div>
 
-				</div>	
+				</div>
 			</div>
 
 
@@ -125,7 +124,7 @@
 				<div class="container">
 				</div>
 			</div>
-			
+
 		</div>
 	</body>
 </html>
