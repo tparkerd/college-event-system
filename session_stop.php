@@ -6,8 +6,8 @@
     var_dump($_SESSION);
     echo $_SESSION['id'] . ' has logged out';
     session_destroy();
-    // header('location: index.php');
-  } else {
-    echo 'no user to log out';
   }
+
+  header('location: index.php');
+
  ?>
