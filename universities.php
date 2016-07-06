@@ -124,7 +124,7 @@
 
 								</div>
 							</div>
-						</div>";
+						</div>
 					</section>
 				</div>
 				<div class="3u">
