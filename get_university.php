@@ -17,9 +17,7 @@ foreach ($dbh->query($sql) as $row) {
     $description = $row['description'];
     $num_students = $row['num_students;'];
 }
-
 $dbh=null;
-
 ?>
 
 <div class="container">
@@ -51,8 +49,8 @@ $dbh=null;
             </section>
         </div>
 
-        </div>
     </div>
+</div>
 </div>";
 
 

@@ -1,3 +1,4 @@
+<?php session_start();?>
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -60,7 +61,7 @@
 						</header>
 
 						<ul class="style3">
-									<?php
+								<?php
 									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
 									$sql="SELECT * FROM e WHERE event_date >= DATE(NOW()) LIMIT 3";
 									$sth=$dbh->prepare($sql);
@@ -97,7 +98,7 @@
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<?php session_start(); if(isset($_SESSION['id']) && $_SESSION['id'] != '') { echo $_SESSION['id'] . ' is logged in.<br>';  echo '<form action="session_stop.php" class="pure-form" method="post"> <input type="submit" value="Log out">';} else {
+						<?php if(isset($_SESSION['id']) && $_SESSION['id'] != '') { echo $_SESSION['id'] . ' is logged in.<br>';  echo '<form action="session_stop.php" class="pure-form" method="post"> <input type="submit" value="Log out">';} else {
 
 						echo <<<EOD
 

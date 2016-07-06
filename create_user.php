@@ -1,15 +1,15 @@
 <?php
     $error="";
     $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-    $fname = $_GET['fname'];
-    $lname = $_GET['lname'];
-    $email = $_GET['email'];
-    $password = $_GET['password'];
-    $sid = $_GET['sid'];
+    $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $sid = $_POST['sid'];
     $sql="INSERT INTO student VALUES (:sid, :fname, :lname, :email, :pword, :university)";
     $sth=$dbh->prepare($sql);
-    if(!empty($_GET['university'])) {
-        $university = $_GET['university'];
+    if(!empty($_POST['university'])) {
+        $university = $_POST['university'];
         $sth->bindParam(':university', $university, PDO::PARAM_STR, 100);
     }
     else {

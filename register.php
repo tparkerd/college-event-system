@@ -59,7 +59,7 @@
 									<h2 class="centered">Register Today</h2>
 								</header>
 
-								<form class="pure-form centered">
+								<form class="pure-form centered" action="create_user.php" method="POST">
 									<fieldset>
 										<legend>Register with us today to gain access to more events!</legend>
 										<br><input type="text" id="txt_fname" style="width:25%;" placeholder="First Name" required>
