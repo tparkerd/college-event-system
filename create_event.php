@@ -40,7 +40,7 @@ else
                 padding: 0;
             }
             #map {
-                height: 100%;
+                height: 560px;
             }
             .controls {
                 margin-top: 10px;
@@ -200,7 +200,7 @@ else
 									<h2>Event Guidelines</h2>
 								</header>
                                 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-                                <div style="width=800px;height=500px;" id="map"></div>
+                                <div id="map"></div>
 								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
 								</p>
 							</section>
