@@ -1,4 +1,4 @@
-<?php session_start()?>
+<?php session_start();?>
 <?php
 $error="";
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
@@ -13,27 +13,21 @@ $contact_email = $_POST['contact_email'];
 $description = $_POST['description'];
 $latitude = $_POST['latitude'];
 $longitude = $_POST['longitude'];
-if(isset($_POST['rso_name']))
-    $rso_name = $_POST['rso_name'];
-$sql="INSERT INTO e VALUES (:event_name, :event_time, :event_date, :description, :event_category, :contact_email, :rating, :contact_phone, :approved_by_admin, :approved_by_superadmin)";
+$sql="INSERT INTO e(eid, event_name, event_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (default, :event_name, :event_time, :event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
 $sth=$dbh->prepare($sql);
 $sth->bindParam(':event_name', $name, PDO::PARAM_STR, 80);
 $sth->bindValue(':event_time', $time);
 $sth->bindValue(':event_date', $date);
-$sth->bindValue(':rating', null);
-$sth->bindValue(':approved_by_superadmin', null);
+$sth->bindValue(':rating', null, PDO::PARAM_INT);
+$sth->bindValue(':approved_by_superadmin', null, PDO::PARAM_INT);
 $sth->bindParam(':description', $description, PDO::PARAM_STR,500);
 $sth->bindParam(':event_category', $category, PDO::PARAM_STR, 50);
 $sth->bindParam(':contact_email', $category, PDO::PARAM_STR, 90);
 $sth->bindParam(':contact_phone', $category, PDO::PARAM_STR, 13);
 $sth->bindValue(':approved_by_admin', $_SESSION['id']);
-try{
-    $sth->execute();
-}
-catch (PDOException $e) {
-    $error = $e;
-    echo $error;
-}
+$sth->execute() or die(print_r($sth->errorInfo(), true));
+
+
 ?>
 
 <!DOCTYPE HTML>
