@@ -1,12 +1,30 @@
 <?php
 $error="";
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-$fname = $_POST['fname'];
-$lname = $_POST['lname'];
-$email = $_POST['email'];
-$password = $_POST['password'];
-$sid = $_POST['sid'];
-$sql="INSERT INTO student VALUES (:sid, :fname, :lname, :email, :pword, :university)";
+$name = $_POST['name'];
+$date = $_POST['date'];
+$time = $_POST['time'];
+$location = $_POST['location'];
+$category = $_POST['category'];
+$privacy  = $_POST['privacy'];
+$contact_phone = $_POST['contact_phone'];
+$contact_email = $_POST['contact_email'];
+$description = $_POST['description'];
+$latitude = $_POST['latitude'];
+$longitude = $_POST['longitude'];
+
+print $name."\n";
+print $time."\n";
+print $date."\n";
+print $location."\n";
+print $category."\n";
+print $privacy."\n";
+print $contact_phone."\n";
+print $contact_email."\n";
+print $description."\n";
+print $latitude."\n";
+print $longitude."\n";
+/*$sql="INSERT INTO student VALUES (:sid, :fname, :lname, :email, :pword, :university)";
 $sth=$dbh->prepare($sql);
 if(!empty($_POST['university'])) {
     $university = $_POST['university'];
@@ -34,5 +52,5 @@ try{
 catch (PDOException $e) {
     $error = $e;
 }
-$success=true;
+$success=true;*/
 ?>
