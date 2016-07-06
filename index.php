@@ -98,7 +98,7 @@
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<?php if(isset($_SESSION['id']) && $_SESSION['id'] != '') { echo $_SESSION['id'] . ' is logged in.<br>';  echo '<form action="session_stop.php" class="pure-form" method="post"> <input type="submit" value="Log out">';} else {
+						<?php if(isset($_SESSION['id']) && $_SESSION['id'] != '') { echo $_SESSION['id'] . ' is logged in.<br><br>';  echo '<form action="session_stop.php" class="pure-form" method="post"> <button type="submit" value="Log out" class="small-button">Log out </button>';} else {
 
 						echo <<<EOD
 
