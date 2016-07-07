@@ -5,7 +5,7 @@ $sth=$dbh->prepare($sql);
 $dbh->query($sql);
 foreach ($dbh->query($sql) as $row) {
 	$event_name = $row['event_name'];
-	$event_time = $row['event_time'];
+	$event_start_time = $row['event_start_time'];
 	$event_date = $row['event_date'];
 	$event_desc = $row['description'];
 	$event_category = $row['event_category'];
@@ -85,7 +85,7 @@ $dbh=null;?>
 									<h2><?php print $event_name;?></h2>
 								</header>
 								<p><b>Date: </b><?php print $event_date;?></p>
-								<p>Time: <?php print $event_time;?></p>
+								<p>Time: <?php print $event_start_time;?></p>
 								<p>Location: (not in db yet, relationship) </p>
 								<p>Contact Information: <br> E-mail: <?php print $contact_email;?>
 								<br> Phone: <?php print $contact_phone;?></p>

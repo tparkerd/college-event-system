@@ -135,13 +135,15 @@ else
                 markers = [];
 
                 // For each place, get the icon, name and location.
-                var bounds = new google.maps.LatLngBounds()
+                var bounds = new google.maps.LatLngBounds();
                 places.forEach(function(place) {
                     var lat = place.geometry.location.lat();
                     var lng = place.geometry.location.lng();
                     document.getElementById("latitude").value = lat;
                     document.getElementById("longitude").value = lng;
+                    document.getElementById("location").value = place.name;
 
+                    console.log(place.name);
                     console.log(lat);
                     console.log(lng);
                     var icon = {
@@ -228,14 +230,23 @@ else
 											<br><br>
 											<input style="width:220px;" type="date" name="date" placeholder="date" required>
 											<br><br>
-											<input style="width:220px;" type="time" name="time"  required>
+											<input style="width:220px;" type="time" name="start_time"  required>
 											<br><br>
-											<input type="text" style="width:220px;" name="location" placeholder="Location Name" required><br><br>
+                                            <input style="width:220px;" type="time" name="end_time"  required>
+                                            <br><br>
+											<input type="text" style="width:220px;" id="location" name="location" placeholder="Location Name" required><br><br>
 											<select style="width:220px;" name="university">
-												<option value="" disabled selected>University</option>
-												<option value="ucf">University of Central Florida</option>
-												<option value="fsu">Florida State University</option>
-												<option value="uf">University of Florida</option>
+                                                <?php
+                                                $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+                                                $sql ="SELECT university from student WHERE sid='".$_SESSION['id']."'";
+                                                $stmt = $dbh->prepare($sql);
+                                                $stmt->execute();
+                                                $unames=$stmt->fetchAll();
+                                                ?>
+                                                <option value="" disabled selected>University</option>
+                                                <?php foreach($unames as $uname):?>
+                                                    <option value="<?php print $uname['university']?>"><?php print $uname['university']; ?></option>
+                                                <?php endforeach; ?>
 											</select>
 											<br><br>
 											<select style="width:220px;" name="category" placeholder="Event Category" required>
@@ -243,8 +254,10 @@ else
 												<option value="concert">Concert</option>
 												<option value="tech-talk">Tech Talk</option>
 												<option value="hackathon">Hack-A-Thon</option>
-												<option value="hackathon">Sporting Event</option>
-											</select>
+												<option value="sports">Sporting Event</option>
+                                                <option value="homecoming">Homecoming</option>
+
+                                            </select>
 											<br><br>
 											<select style="width:220px;" name="privacy" placeholder="Event Type" required>
 												<option value="" disabled selected>Event Type</option>
