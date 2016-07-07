@@ -30,55 +30,74 @@ $sth->bindParam(':event_category', $category, PDO::PARAM_STR, 50);
 $sth->bindParam(':contact_email', $contact_email, PDO::PARAM_STR, 90);
 $sth->bindParam(':contact_phone', $contact_phone, PDO::PARAM_STR, 13);
 $sth->bindValue(':approved_by_admin', $_SESSION['id']);
-$sth->execute() or die(print_r($sth->errorInfo(), true));
-
-$eid_result = $dbh->lastInsertId('eid');
-
-$sql_location = "INSERT INTO location(location_name, latitude, longitude) VALUES (:location, :latitude, :longitude)";
-$prep_location = $dbh->prepare($sql_location);
-$prep_location->bindParam(':location', $location, PDO::PARAM_STR, 200);
-$prep_location->bindParam(':latitude', $latitude, PDO::PARAM_STR);
-$prep_location->bindParam(':longitude', $longitude, PDO::PARAM_STR);
-$prep_location->execute() or die(print_r($prep_location->errorInfo(), true));
 
 
-$sql_at = "INSERT INTO at(eid, location_name) VALUES (:eid, :location)";
-$at = $dbh->prepare($sql_at);
-$at->bindParam(':eid', $eid_result, PDO::PARAM_INT);
-$at->bindParam(':location', $location, PDO::PARAM_STR,200);
-$at->execute() or die(print_r($at->errorInfo(), true));
+$stmt = $dbh->prepare("SELECT * FROM location WHERE location_name='".$location."'");
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-
-
-if($privacy == 'public'){
-    $sql2="INSERT INTO public_event(eid, event_name, event_start_time,event_end_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (:eid, :event_name, :event_start_time, :event_end_time,:event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
-}
-else if($privacy == 'private'){
-    $sql2="INSERT INTO private_event(eid, event_name, event_start_time, event_end_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (:eid, :event_name, :event_start_time, :event_end_time, :event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
-}
-else if($privacy == 'RSO'){
-    $sql2="INSERT INTO rso_event(eid, event_name, event_start_time, event_end_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (:eid, :event_name, :event_start_time, :event_end_time, :event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
-    $sql_owns_event = "INSERT INTO owns_event VALUES (:eid, :rso_name)";
-    $owns_event = $dbh->prepare($sql_owns_event);
-    $owns_event->bindParam(':eid', $eid_result);
-    $owns_event->bindParam(':rso_name', $rso_name);
-    $owns_event->execute() or die(print_r($owns_event->errorInfo(), true));
+if(!$row)
+{
+    echo "in if statement";
+    $sql_location = "INSERT INTO location(location_name, latitude, longitude) VALUES (:location, :latitude, :longitude)";
+    $prep_location = $dbh->prepare($sql_location);
+    $prep_location->bindParam(':location', $location, PDO::PARAM_STR, 200);
+    $prep_location->bindParam(':latitude', $latitude, PDO::PARAM_STR);
+    $prep_location->bindParam(':longitude', $longitude, PDO::PARAM_STR);
+    $prep_location->execute() or die(print_r($prep_location->errorInfo(), true));
 }
 
-$sth2=$dbh->prepare($sql2);
-$sth2->bindValue(':eid', $eid_result);
-$sth2->bindParam(':event_name', $name, PDO::PARAM_STR, 80);
-$sth2->bindValue(':event_start_time', $event_start_time);
-$sth2->bindValue(':event_end_time', $event_start_time);
-$sth2->bindValue(':event_date', $date);
-$sth2->bindValue(':rating', null, PDO::PARAM_INT);
-$sth2->bindValue(':approved_by_superadmin', null, PDO::PARAM_INT);
-$sth2->bindParam(':description', $description, PDO::PARAM_STR,500);
-$sth2->bindParam(':event_category', $category, PDO::PARAM_STR, 50);
-$sth2->bindParam(':contact_email', $contact_email, PDO::PARAM_STR, 90);
-$sth2->bindParam(':contact_phone', $contact_phone, PDO::PARAM_STR, 13);
-$sth2->bindValue(':approved_by_admin', $_SESSION['id']);
-$sth2->execute() or die(print_r($sth2->errorInfo(), true));
+
+$sql_check_overlap = "SELECT DISTINCT e.eid FROM e, at WHERE e.event_start_time <= '".$event_end_time."' AND e.event_end_time >= '".$event_start_time."' AND e.event_date = '".$date."' AND at.location_name='".$location."'";
+$check_overlap = $dbh->prepare($sql_check_overlap);
+$check_overlap->execute();
+$overlap_result= $check_overlap->fetch(PDO::FETCH_ASSOC);
+
+
+if($overlap_result){
+    $error = "There is already an event scheduled at this location overlapping with the times you chose.";
+}
+
+else{
+    $sth->execute() or die(print_r($sth->errorInfo(), true));
+    $eid_result = $dbh->lastInsertId('eid');
+    $sql_at = "INSERT INTO at(eid, location_name) VALUES (:eid, :location)";
+    $at = $dbh->prepare($sql_at);
+    $at->bindParam(':eid', $eid_result, PDO::PARAM_INT);
+    $at->bindParam(':location', $location, PDO::PARAM_STR,200);
+    $at->execute() or die(print_r($at->errorInfo(), true));
+
+
+    if($privacy == 'public'){
+        $sql2="INSERT INTO public_event(eid, event_name, event_start_time,event_end_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (:eid, :event_name, :event_start_time, :event_end_time,:event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
+    }
+    else if($privacy == 'private'){
+        $sql2="INSERT INTO private_event(eid, event_name, event_start_time, event_end_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (:eid, :event_name, :event_start_time, :event_end_time, :event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
+    }
+    else if($privacy == 'RSO'){
+        $sql2="INSERT INTO rso_event(eid, event_name, event_start_time, event_end_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (:eid, :event_name, :event_start_time, :event_end_time, :event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
+        $sql_owns_event = "INSERT INTO owns_event VALUES (:eid, :rso_name)";
+        $owns_event = $dbh->prepare($sql_owns_event);
+        $owns_event->bindParam(':eid', $eid_result);
+        $owns_event->bindParam(':rso_name', $rso_name);
+        $owns_event->execute() or die(print_r($owns_event->errorInfo(), true));
+    }
+
+    $sth2=$dbh->prepare($sql2);
+    $sth2->bindValue(':eid', $eid_result);
+    $sth2->bindParam(':event_name', $name, PDO::PARAM_STR, 80);
+    $sth2->bindValue(':event_start_time', $event_start_time);
+    $sth2->bindValue(':event_end_time', $event_start_time);
+    $sth2->bindValue(':event_date', $date);
+    $sth2->bindValue(':rating', null, PDO::PARAM_INT);
+    $sth2->bindValue(':approved_by_superadmin', null, PDO::PARAM_INT);
+    $sth2->bindParam(':description', $description, PDO::PARAM_STR,500);
+    $sth2->bindParam(':event_category', $category, PDO::PARAM_STR, 50);
+    $sth2->bindParam(':contact_email', $contact_email, PDO::PARAM_STR, 90);
+    $sth2->bindParam(':contact_phone', $contact_phone, PDO::PARAM_STR, 13);
+    $sth2->bindValue(':approved_by_admin', $_SESSION['id']);
+    $sth2->execute() or die(print_r($sth2->errorInfo(), true));
+}
 ?>
 
 <!DOCTYPE HTML>
@@ -188,20 +207,20 @@ $sth2->execute() or die(print_r($sth2->errorInfo(), true));
             <div class="row">
                 <div class="9u skel-cell-important">
                     <section id="content">
-                        <header>
-                            <h2>Event Guidelines</h2>
-                        </header>
-                        <p> <?php print $name."\n";
-                            print $time."\n";
-                            print $date."\n";
-                            print $location."\n";
-                            print $category."\n";
-                            print $privacy."\n";
-                            print $contact_phone."\n";
-                            print $contact_email."\n";
-                            print $description."\n";
-                            print "latitude= ".$latitude."\n";
-                            print "longitude= ".$longitude."\n";?>
+
+                            <br><br>
+                            <?php
+                                if($error != ''){
+                                    echo "<header><h2>Create Event Request Failed</h2></header><p>";
+                                    print $error;
+                                    echo "<br><br><a href='create_event.php' style='color:black;'>Click here to go back to event creation page</a></p>";
+                                }
+                                else{
+                                    echo "<header><h2>Request Successfully Submitted!</h2></header><p>";
+                                    print "Your request to create this event has been submitted. It must be approved before appearing on the website.";
+                                    echo "</p>";
+                                }?>
+                            <br>
 
                         </p>
                     </section>

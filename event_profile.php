@@ -1,20 +1,35 @@
 <?php $event_id=intval($_GET['eid']);
-$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=test', 'root', 'S#8roN*PJTMQWJ4m');
+$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 $sql="SELECT * FROM e WHERE eid='".$event_id."'";
 $sth=$dbh->prepare($sql);
-$dbh->query($sql);
-foreach ($dbh->query($sql) as $row) {
-	$event_name = $row['event_name'];
-	$event_start_time = $row['event_start_time'];
-	$event_date = $row['event_date'];
-	$event_desc = $row['description'];
-	$event_category = $row['event_category'];
-	$contact_email = $row['contact_email'];
-	$contact_phone = $row['contact_phone'];
-	$event_rating = $row['rating'];
-}
+$sth->execute();
+$row = $sth->fetch();
 
-$dbh=null;?>
+$event_name = $row['event_name'];
+$event_start_time = $row['event_start_time'];
+$event_date = $row['event_date'];
+$event_desc = $row['description'];
+$event_category = $row['event_category'];
+$contact_email = $row['contact_email'];
+$contact_phone = $row['contact_phone'];
+$event_rating = $row['rating'];
+
+$location_sql = "SELECT * FROM at WHERE eid='".$event_id."'";
+$location_stmt = $dbh->prepare($location_sql);
+$location_stmt->execute();
+$loc_result = $location_stmt->fetch();
+$event_location = $loc_result['location_name'];
+
+$latlong_sql = "SELECT * FROM location WHERE location_name='".$event_location."'";
+$latlong_stmt = $dbh->prepare($latlong_sql);
+$latlong_stmt->execute();
+$latlong_result = $latlong_stmt->fetch();
+$lat = $latlong_result['latitude'];
+$long = $latlong_result['longitude'];
+
+
+$dbh=null;
+?>
 
 <!DOCTYPE HTML>
 <!--
@@ -77,8 +92,8 @@ $dbh=null;?>
 			<!-- /Header -->
 
 			<div id="page">
-				<div class="container">
-					<div class="row">
+				<div style="max-width=500px" class="container">
+					<div style="max-width:80%;" class="row" >
 						<div class="9u skel-cell-important">
 							<section id="content">
 								<header>
@@ -86,7 +101,7 @@ $dbh=null;?>
 								</header>
 								<p><b>Date: </b><?php print $event_date;?></p>
 								<p>Time: <?php print $event_start_time;?></p>
-								<p>Location: (not in db yet, relationship) </p>
+								<p>Location: <?php print $event_location ?></p>
 								<p>Contact Information: <br> E-mail: <?php print $contact_email;?>
 								<br> Phone: <?php print $contact_phone;?></p>
 								<p><?php print $event_desc;?></p>
@@ -134,8 +149,7 @@ $dbh=null;?>
 								</form>
 							</section>
 							<section id="list_comments">
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
+								<p>
 								</p>
 							</section>
 						</div>
@@ -149,9 +163,9 @@ $dbh=null;?>
 									<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBhju0H-YndJzexINhO5u4JU5o5G-0jtgg"></script>
 									<script>
 										function initialize() {
-											var myLatLng = {lat: 28.6024, lng: -81.2001};
+											var myLatLng = {lat: <?php echo $lat?>, lng: <?php echo $long?>};
 											var mapProp = {
-												center:new google.maps.LatLng(28.6024,-81.2001),
+												center:new google.maps.LatLng(<?php echo $lat?>,<?php echo $long?>),
 												zoom:15,
 												mapTypeId:google.maps.MapTypeId.ROADMAP
 											};
