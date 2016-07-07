@@ -43,7 +43,7 @@
 					document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
 				}
 			};
-			xmlhttp.open("GET", "/get_university.php?q="+name,true);
+			xmlhttp.open("GET", "get_university.php?q="+name,true);
 			xmlhttp.send();
 		}
 	</script>
