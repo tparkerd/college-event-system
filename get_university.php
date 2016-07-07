@@ -15,7 +15,7 @@ foreach ($dbh->query($sql) as $row) {
     $img_url_1 = $row['picture_one'];
     $img_url_2 = $row['picture_two'];
     $description = $row['description'];
-    $num_students = $row['num_students;'];
+    $num_students = $row['num_students'];
 }
 $dbh=null;
 ?>
