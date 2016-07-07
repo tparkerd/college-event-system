@@ -1,3 +1,67 @@
+<?php session_start();?>
+<?php
+//temporary just so html page doesnt error on empty values from field
+$keywords = $category = $public = $private = $rso = $start_date = $end_date = "";
+$keywords_clause = $category_clause = $between_clause = $starting_clause = $ending_clause = "";
+if (isset($_POST['submit'])) {
+	$public_search_query = "SELECT * FROM public_event WHERE ";
+	$private_search_query = "SELECT * FROM private_event WHERE ";
+
+	if (isset($_POST['keywords'])){
+		$keywords = strval($_POST['keywords']);
+		$keywords_clause = "event_name LIKE %".$keywords."%";
+	}
+	if (isset($_POST['category'])) {
+		$category = strval($_POST['category']);
+		$category_clause = "event_category='".$category."'";
+	}
+	if (isset($_POST['start_date']) && isset($_POST['end_date'])) {
+		$start_date = strval($_POST['start_date']);
+		$end_date = strval($_POST['end_date']);
+		$between_clause = "(event_date BETWEEN '".$start_date."' AND '".$end_date."')";
+	}
+	if (isset($_POST['start_date']) && !isset($_POST['end_date'])) {
+		$start_date = strval($_POST['start_date']);
+		$starting_clause = "event_date >='".$start_date."'";
+	}
+	if (isset($_POST['start_date']) && !isset($_POST['end_date'])) {
+		$start_date = strval($_POST['start_date']);
+		$ending_clause = "(event_date BETWEEN DATE(NOW()) AND '".$end_date."')";
+	}
+	if (isset($_POST['public']))
+		$public = boolval($_POST['public']);
+	if (isset($_POST['private']))
+		$private = boolval($_POST['private']);
+	if (isset($_POST['rso']))
+		$rso = boolval($_POST['rso']);
+
+	$clause_array = array($keywords_clause, $category_clause, $between_clause, $starting_clause, $ending_clause);
+	if($public){
+		foreach($clause_array as $i=>$value){
+			if($value != "" && $i == 0){
+				$public_search_query .= $value;
+			}
+			else if($value != "" && $i != 0){
+				$public_search_query .= " AND ".$value;
+			}
+		}
+	}
+	if($private){
+		foreach($clause_array as $i=>$value){
+			if($value != "" && $i == 0){
+				$private_search_query .= $value;
+			}
+			else if($value != "" && $i != 0){
+				$private_search_query .= " AND ".$value;
+			}
+		}
+	}
+	if($rso){
+
+	}
+}
+?>
+
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -23,6 +87,23 @@
 		</noscript>
 		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+		<script>
+			function loadDoc(url, cfunc) {
+				var xhttp;
+				xhttp=new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (xhttp.readyState == 4 && xhttp.status == 200) {
+						cfunc(xhttp);
+					}
+				};
+				xhttp.open("GET", url, true);
+				xhttp.send();
+			}
+
+			function myFunction(xhttp) {
+				document.getElementById("search_results").innerHTML = xhttp.responseText;
+			}
+		</script>
 	</head>
 	<body>
 		<div id="wrapper">
@@ -54,14 +135,23 @@
 						<div class="9u skel-cell-important" id="event_results">
 							<section id="content">
 								<div>
-								<header>
-									<h2>Search Results</h2>
-								</header>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
-								</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
-								</p>
+									<header>
+										<h2>Search Results for <?php print $keywords?></h2>
+									</header>
+									<p> Public: <?php print $public?> <br>
+										Private: <?php print $private?> <br>
+										RSO: <?php print $rso?> <br>
+										Category: <?php print $category?> <br>
+										Start Date: <?php print $start_date?> <br>
+										End Date: <?php print $end_date?>
+
+										<?php print $public_search_query?><br><br><br>
+										<?php print $private_search_query?><br><br><br>
+									</p>
+
+									<p>
+
+									</p>
 								</div>
 							</section>
 						</div>
@@ -71,7 +161,7 @@
 										<h2 class="centered">Search Events</h2>
 									</header>
 
-								<form class="pure-form centered" action="event_search_results.php">
+								<form name="search_form" id="search_form" class="pure-form centered"method="POST">
 									<fieldset>
 										<legend>Find events that match your interests</legend>
 										<input type="text" name="keywords" placeholder="Search Keywords">
@@ -107,7 +197,7 @@
 											<div style="text-align:left;margin-left:40px">To:<br><br></div>
 										<input type="date" id="end_date" name="end_date" placeholder="End Date"><br><br>
 											</label>
-										<button type="submit" class="small-button">Search</button>
+										<button type="submit" id="submit" name="submit" class="small-button">Search</button>
 									</fieldset>
 								</form>
 							</section>
