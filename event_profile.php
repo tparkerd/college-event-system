@@ -1,3 +1,4 @@
+<?php session_start();?>
 <?php $event_id=intval($_GET['eid']);
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 $sql="SELECT * FROM e WHERE eid='".$event_id."'";
@@ -31,6 +32,22 @@ $long = $latlong_result['longitude'];
 $dbh=null;
 ?>
 
+<?php
+$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+$text = $rating = "";
+
+if (isset($_POST['submit_comment'])) {
+	if (!empty($_POST['comment_text']))
+		$text = strval($_POST['comment_text']);
+	if (!empty($_POST['rating']))
+		$rating = intval($_POST['rating']);
+	$student_id = $_SESSION['id'];
+	$insert_comment_sql = "INSERT INTO comments(sid, eid, rating, ctimestamp, text) VALUES ('".$student_id."','".$event_id."','".$rating."', default,'".$text."')";
+	$comment_stmt = $dbh->prepare($insert_comment_sql);
+	$comment_stmt->execute();
+}
+?>
+
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -56,6 +73,33 @@ $dbh=null;
 		</noscript>
 		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+		<script>
+				function editComment() {
+					var xhttp = new XMLHttpRequest();
+					xhttp.onreadystatechange = function() {
+						if (xhttp.readyState == 4 && xhttp.status == 200) {
+							document.getElementById("single_comment_<?php print $_SESSION['id']?>").innerHTML = xhttp.responseText;
+						}
+					};
+					xhttp.open("GET", "edit_comment.php?eid=<?php print $event_id?>", true);
+					xhttp.send();
+				}
+
+				function deleteComment() {
+					$.ajax({
+						url: 'delete_comment.php',
+						type: 'post', // performing a POST request
+						data : {
+							eid : '<?php print $event_id?>', // will be accessible in $_POST['data1']
+						},
+						dataType: 'json',
+						success: function(data)
+						{
+							// etc...
+						}
+					});
+				}
+		</script>
 	</head>
 	<body>
 	<div id="fb-root"></div>
@@ -115,41 +159,66 @@ $dbh=null;
 								<header>
 									<h2>Comments</h2>
 								</header>
-								<form class="pure-form">
+								<form class="pure-form" method="POST">
 									<fieldset>
 										<legend>Add a comment</legend>
 										<br>
-										<div id="rating">
+										<div id="rating" name="rating">
 											Rating:
 											<label style="display:inline;margin-right:10px;margin-left:10px;" for="one_star" class="pure-radio">
-												<input id="one_star" type="radio" name="rating" value="one_star" checked>
+												<input id="one_star" type="radio" name="rating" value="1" checked>
 													1
 												</label>
 											<label style="display:inline;margin-right:10px;" for="two_star" class="pure-radio">
-												<input id="two_star" type="radio" name="rating" value="two_star" checked>
+												<input id="two_star" type="radio" name="rating" value="2" checked>
 												2
 											</label>
 											<label style="display:inline;margin-right:10px;" for="three_star" class="pure-radio label-inline">
-												<input id="three_star" type="radio" name="rating" value="three_star" checked>
+												<input id="three_star" type="radio" name="rating" value="3" checked>
 												3
 											</label>
 											<label style="display:inline;margin-right:10px;" for="four_star" class="pure-radio">
-												<input id="four_star" type="radio" name="rating" value="four_star" checked>
+												<input id="four_star" type="radio" name="rating" value="4" checked>
 												4
 											</label>
 											<label style="display:inline;margin-right:10px;" for="five_star" class="pure-radio">
-												<input id="five_star" type="radio" name="rating" value="five_star" checked>
+												<input id="five_star" type="radio" name="rating" value="5" checked>
 												5
 											</label>
 										</div>
 										<br><br>
-										<textarea rows="8" cols="50" placeholder="Enter your thoughts and suggestions here" name="event_description"></textarea><br>
-										<button type="submit" class="small-button">Submit</button>
+										<textarea rows="8" cols="50" placeholder="Enter your thoughts and suggestions here" name="comment_text" id="comment_text"></textarea><br>
+										<button type="submit" id="submit_comment" name="submit_comment" class="small-button">Submit</button>
 									</fieldset>
 								</form>
 							</section>
 							<section id="list_comments">
 								<p>
+									<?php
+										date_default_timezone_set('America/New_York');
+										$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+
+										$sql="SELECT * FROM comments WHERE eid='".$event_id."'";
+										$sth=$dbh->prepare($sql);
+										foreach ($dbh->query($sql) as $row) {
+											echo '<p><div id="single_comment_';
+											print $_SESSION['id'];
+											echo '">';
+											print "Rating: ".$row['rating'];
+											echo '<br>';
+											print $row['text'];
+											echo '<br>';
+											print "Posted on: ".date('M j Y g:i A', strtotime($row['ctimestamp']));
+											echo '<br>';
+											if($row['sid'] == $_SESSION['id']){
+												echo '<br><button onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
+												echo '<br><button onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
+
+											}
+											echo '</div></p>';
+										}
+										$dbh=null;
+										?>
 								</p>
 							</section>
 						</div>
