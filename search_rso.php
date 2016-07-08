@@ -1,3 +1,8 @@
+<?php session_start();?>
+<?php
+	if(isset($_POST['submit']))
+		$keywords = $_POST['rso_name'];
+	?>
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -55,12 +60,25 @@
 						<div class="9u skel-cell-important">
 							<section id="content" >
 								<header>
-									<h2>Search Results</h2>
+									<h2>RSO Search Results</h2>
 								</header>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
-								</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
+								<ul class="style3">
+									<?php $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+									if(isset($_POST['submit'])) {
+										$sth = "SELECT * FROM belongs_to_university WHERE rso_name LIKE '%".$keywords."' AND university_name=(SELECT university FROM student WHERE sid='".$_SESSION['id']."'))";
+										$sth->execute();
+										while ($row = $sth_public->fetch(PDO::FETCH_ASSOC)) {
+											echo "<li>";
+											echo '<p style="font-size:24pt;"><u><a href="#">';
+											print $row['rso_name'];
+											echo "</a></u></p>";
+											echo "<p><b>";
+											print $row['university_name'] . "\t";
+											echo "</b></p><br><br></li>";
+										}
+									}
+									?>
+									</ul>
 								</p>
 							</section>
 						</div>
@@ -70,11 +88,11 @@
 										<h2 class="centered">Find Organizations to Join</h2>
 									</header>
 
-								<form class="pure-form centered">
+								<form class="pure-form centered" method="POST">
 									<fieldset>
 										<legend>Search for groups that you relate to</legend>
 										<br><br>
-										<input type="text" name="university_name" placeholder="Organization Name">
+										<input type="text" id="rso_name" name="rso_name" placeholder="Organization Name">
 										<br><br>
 										<button type="submit" class="small-button">Search</button>
 									</fieldset>
