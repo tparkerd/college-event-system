@@ -275,7 +275,7 @@ else
                                                 ?>
                                                     <option value="" disabled selected>RSO Name, if RSO Event</option>
                                                     <?php foreach($unames as $uname):?>
-                                                        <option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
+                                                        <option value="<?php print $uname['rso_name']?>"><?php print $uname['rso_name']; ?></option>
                                                     <?php endforeach; ?>
                                             </select>
 											<br><br>

@@ -38,7 +38,6 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if(!$row)
 {
-    echo "in if statement";
     $sql_location = "INSERT INTO location(location_name, latitude, longitude) VALUES (:location, :latitude, :longitude)";
     $prep_location = $dbh->prepare($sql_location);
     $prep_location->bindParam(':location', $location, PDO::PARAM_STR, 200);
@@ -76,27 +75,44 @@ else{
     }
     else if($privacy == 'RSO'){
         $sql2="INSERT INTO rso_event(eid, event_name, event_start_time, event_end_time, event_date, description, event_category, contact_email, contact_phone, rating, approved_by_admin, approved_by_superadmin) VALUES (:eid, :event_name, :event_start_time, :event_end_time, :event_date, :description, :event_category, :contact_email, :contact_phone, :rating, :approved_by_admin, :approved_by_superadmin)";
-        $sql_owns_event = "INSERT INTO owns_event VALUES (:eid, :rso_name)";
+        $sth2=$dbh->prepare($sql2);
+        $sth2->bindValue(':eid', $eid_result);
+        $sth2->bindParam(':event_name', $name, PDO::PARAM_STR, 80);
+        $sth2->bindValue(':event_start_time', $event_start_time);
+        $sth2->bindValue(':event_end_time', $event_start_time);
+        $sth2->bindValue(':event_date', $date);
+        $sth2->bindValue(':rating', null, PDO::PARAM_INT);
+        $sth2->bindValue(':approved_by_superadmin', null, PDO::PARAM_INT);
+        $sth2->bindParam(':description', $description, PDO::PARAM_STR,500);
+        $sth2->bindParam(':event_category', $category, PDO::PARAM_STR, 50);
+        $sth2->bindParam(':contact_email', $contact_email, PDO::PARAM_STR, 90);
+        $sth2->bindParam(':contact_phone', $contact_phone, PDO::PARAM_STR, 13);
+        $sth2->bindValue(':approved_by_admin', $_SESSION['id']);
+        $sth2->execute() or die(print_r($sth2->errorInfo(), true));
+        $sql_owns_event = "INSERT INTO owns_event(rso_eid, rso_name) VALUES (:eid, :rso_name)";
         $owns_event = $dbh->prepare($sql_owns_event);
         $owns_event->bindParam(':eid', $eid_result);
         $owns_event->bindParam(':rso_name', $rso_name);
         $owns_event->execute() or die(print_r($owns_event->errorInfo(), true));
+
     }
 
-    $sth2=$dbh->prepare($sql2);
-    $sth2->bindValue(':eid', $eid_result);
-    $sth2->bindParam(':event_name', $name, PDO::PARAM_STR, 80);
-    $sth2->bindValue(':event_start_time', $event_start_time);
-    $sth2->bindValue(':event_end_time', $event_start_time);
-    $sth2->bindValue(':event_date', $date);
-    $sth2->bindValue(':rating', null, PDO::PARAM_INT);
-    $sth2->bindValue(':approved_by_superadmin', null, PDO::PARAM_INT);
-    $sth2->bindParam(':description', $description, PDO::PARAM_STR,500);
-    $sth2->bindParam(':event_category', $category, PDO::PARAM_STR, 50);
-    $sth2->bindParam(':contact_email', $contact_email, PDO::PARAM_STR, 90);
-    $sth2->bindParam(':contact_phone', $contact_phone, PDO::PARAM_STR, 13);
-    $sth2->bindValue(':approved_by_admin', $_SESSION['id']);
-    $sth2->execute() or die(print_r($sth2->errorInfo(), true));
+    if($privacy != 'RSO') {
+        $sth2 = $dbh->prepare($sql2);
+        $sth2->bindValue(':eid', $eid_result);
+        $sth2->bindParam(':event_name', $name, PDO::PARAM_STR, 80);
+        $sth2->bindValue(':event_start_time', $event_start_time);
+        $sth2->bindValue(':event_end_time', $event_start_time);
+        $sth2->bindValue(':event_date', $date);
+        $sth2->bindValue(':rating', null, PDO::PARAM_INT);
+        $sth2->bindValue(':approved_by_superadmin', null, PDO::PARAM_INT);
+        $sth2->bindParam(':description', $description, PDO::PARAM_STR, 500);
+        $sth2->bindParam(':event_category', $category, PDO::PARAM_STR, 50);
+        $sth2->bindParam(':contact_email', $contact_email, PDO::PARAM_STR, 90);
+        $sth2->bindParam(':contact_phone', $contact_phone, PDO::PARAM_STR, 13);
+        $sth2->bindValue(':approved_by_admin', $_SESSION['id']);
+        $sth2->execute() or die(print_r($sth2->errorInfo(), true));
+    }
 }
 ?>
 

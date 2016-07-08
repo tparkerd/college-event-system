@@ -4,42 +4,45 @@
 $keywords = $category = $public = $private = $rso = $start_date = $end_date = "";
 $keywords_clause = $category_clause = $between_clause = $starting_clause = $ending_clause = "";
 if (isset($_POST['submit'])) {
-	$public_search_query = "SELECT * FROM public_event WHERE ";
-	$private_search_query = "SELECT * FROM private_event WHERE ";
-
-	if (isset($_POST['keywords'])){
+	$public_search_query = "SELECT * FROM public_event ";
+	$private_search_query = "SELECT * FROM private_event ";
+	$pattern = "^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$";
+	$rso_search_query = "SELECT * FROM rso_event WHERE (SELECT rso_eid FROM owns_event WHERE rso_name = (SELECT rso_name FROM affiliates_rso WHERE sid='".$_SESSION['id']."'))";
+	if (!empty($_POST['keywords']) && $_POST['keywords'] != ""){
 		$keywords = strval($_POST['keywords']);
-		$keywords_clause = "event_name LIKE %".$keywords."%";
+		$keywords_clause = "event_name LIKE '%".$keywords."%'";
 	}
-	if (isset($_POST['category'])) {
+	if (!empty($_POST['category'])) {
 		$category = strval($_POST['category']);
 		$category_clause = "event_category='".$category."'";
 	}
-	if (isset($_POST['start_date']) && isset($_POST['end_date'])) {
+	if (!empty($_POST['start_date']) && !empty($_POST['end_date']) && !preg_match($pattern, $start_date) && !preg_match($pattern, $end_date)) {
 		$start_date = strval($_POST['start_date']);
 		$end_date = strval($_POST['end_date']);
 		$between_clause = "(event_date BETWEEN '".$start_date."' AND '".$end_date."')";
 	}
-	if (isset($_POST['start_date']) && !isset($_POST['end_date'])) {
+	if (!empty($_POST['start_date']) && empty($_POST['end_date']) && !preg_match($pattern, $start_date) && preg_match($pattern, $end_date)) {
 		$start_date = strval($_POST['start_date']);
 		$starting_clause = "event_date >='".$start_date."'";
 	}
-	if (isset($_POST['start_date']) && !isset($_POST['end_date'])) {
+	if (!empty($_POST['end_date']) && empty($_POST['start_date']) && !preg_match($pattern, $end_date) && preg_match($pattern, $start_date)) {
 		$start_date = strval($_POST['start_date']);
-		$ending_clause = "(event_date BETWEEN DATE(NOW()) AND '".$end_date."')";
+		$ending_clause = "(event_date BETWEEN ".DATE(NOW())." AND '".$end_date."')";
 	}
-	if (isset($_POST['public']))
+	if (!empty($_POST['public']))
 		$public = boolval($_POST['public']);
-	if (isset($_POST['private']))
+	if (!empty($_POST['private']))
 		$private = boolval($_POST['private']);
-	if (isset($_POST['rso']))
+	if (!empty($_POST['rso']))
 		$rso = boolval($_POST['rso']);
 
 	$clause_array = array($keywords_clause, $category_clause, $between_clause, $starting_clause, $ending_clause);
 	if($public){
+		$inserted_clause = false;
 		foreach($clause_array as $i=>$value){
-			if($value != "" && $i == 0){
-				$public_search_query .= $value;
+			if(($value != "" && $i == 0) || ($value != "" && $inserted_clause==false)){
+				$public_search_query .= "WHERE ". $value;
+				$inserted_clause = true;
 			}
 			else if($value != "" && $i != 0){
 				$public_search_query .= " AND ".$value;
@@ -47,9 +50,11 @@ if (isset($_POST['submit'])) {
 		}
 	}
 	if($private){
+		$inserted_clause = false;
 		foreach($clause_array as $i=>$value){
-			if($value != "" && $i == 0){
-				$private_search_query .= $value;
+			if(($value != "" && $i == 0) || ($value != "" && $inserted_clause==false)){
+				$private_search_query .= "WHERE ".$value;
+				$inserted_clause = true;
 			}
 			else if($value != "" && $i != 0){
 				$private_search_query .= " AND ".$value;
@@ -57,7 +62,11 @@ if (isset($_POST['submit'])) {
 		}
 	}
 	if($rso){
-
+		foreach($clause_array as $i=>$value){
+			if($value != ""){
+				$rso_search_query .= " AND ".$value;
+			}
+		}
 	}
 }
 ?>
@@ -143,10 +152,55 @@ if (isset($_POST['submit'])) {
 										RSO: <?php print $rso?> <br>
 										Category: <?php print $category?> <br>
 										Start Date: <?php print $start_date?> <br>
-										End Date: <?php print $end_date?>
+										End Date: <?php print $end_date?> <br>
 
 										<?php print $public_search_query?><br><br><br>
 										<?php print $private_search_query?><br><br><br>
+										<?php print $rso_search_query?><br><br>
+										<?php $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+										$sth_public=$dbh->prepare($public_search_query);
+										if($public) {
+											$sth_public->execute();
+											while ($row = $sth_public->fetch(PDO::FETCH_ASSOC)) {
+												echo "<li>";
+												echo "<p class=\"date\"><a href=\"#\"><b>";
+												print $row['event_date'] . "\t";
+												echo "</b></a></p>";
+												echo '<p><a href="event_profile.php?eid=' . $row['eid'] . '">';
+												print $row['event_name'] . "\t";
+												echo "</a>";
+												echo "</p></li>";
+											}
+										}
+										if($private) {
+											$sth_private = $dbh->prepare($private_search_query);
+											$sth_private->execute();
+											while ($row = $sth_private->fetch(PDO::FETCH_ASSOC)) {
+												echo "<li>";
+												echo "<p class=\"date\"><a href=\"#\"><b>";
+												print $row['event_date'] . "\t";
+												echo "</b></a></p>";
+												echo '<p><a href="event_profile.php?eid=' . $row['eid'] . '">';
+												print $row['event_name'] . "\t";
+												echo "</a>";
+												echo "</p></li>";
+											}
+										}
+										if($rso) {
+											$sth_rso = $dbh->prepare($rso_search_query);
+											$sth_rso->execute();
+											while ($row = $sth_rso->fetch(PDO::FETCH_ASSOC)) {
+												echo "<li>";
+												echo "<p class=\"date\"><a href=\"#\"><b>";
+												print $row['event_date'] . "\t";
+												echo "</b></a></p>";
+												echo '<p><a href="event_profile.php?eid=' . $row['eid'] . '">';
+												print $row['event_name'] . "\t";
+												echo "</a>";
+												echo "</p></li>";
+											}
+										}
+										?>
 									</p>
 
 									<p>
