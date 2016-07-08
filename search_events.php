@@ -155,12 +155,12 @@ if (isset($_POST['submit'])) {
 											$sth_public->execute();
 											while ($row = $sth_public->fetch(PDO::FETCH_ASSOC)) {
 												echo "<p><li>";
+												echo '<p style="font-size:24pt;"><u><a href="event_profile.php?eid=' . $row['eid'] . '">';
+												print $row['event_name'] . "\t";
+												echo "</a></u></p>";
 												echo "<p class=\"date\"><b>";
 												print $row['event_date'] . "\t";
-												echo "</b></a></p>";
-												echo '<p><a style="color:black; font-size=16" href="event_profile.php?eid=' . $row['eid'] . '">';
-												print $row['event_name'] . "\t";
-												echo "</a><br>";
+												echo "</b></a></p><br><br><p>";
 												print $row['description'];
 												echo '<br>';
 												echo "</li></p>";
@@ -170,28 +170,32 @@ if (isset($_POST['submit'])) {
 											$sth_private = $dbh->prepare($private_search_query);
 											$sth_private->execute();
 											while ($row = $sth_private->fetch(PDO::FETCH_ASSOC)) {
-												echo "<li>";
-												echo "<p class=\"date\"><a href=\"#\"><b>";
-												print $row['event_date'] . "\t";
-												echo "</b></a></p>";
-												echo '<p><a href="event_profile.php?eid=' . $row['eid'] . '">';
+												echo "<p><li>";
+												echo '<p style="font-size:24pt;"><u><a href="event_profile.php?eid=' . $row['eid'] . '">';
 												print $row['event_name'] . "\t";
-												echo "</a>";
-												echo "</p></li>";
+												echo "</a></u></p>";
+												echo "<p class=\"date\"><b>";
+												print $row['event_date'] . "\t";
+												echo "</b></a></p><br><br><p>";
+												print $row['description'];
+												echo '<br>';
+												echo "</li></p>";
 											}
 										}
 										if($rso) {
 											$sth_rso = $dbh->prepare($rso_search_query);
 											$sth_rso->execute();
 											while ($row = $sth_rso->fetch(PDO::FETCH_ASSOC)) {
-												echo "<li>";
-												echo "<p class=\"date\"><a href=\"#\"><b>";
-												print $row['event_date'] . "\t";
-												echo "</b></a></p>";
-												echo '<p><a href="event_profile.php?eid=' . $row['eid'] . '">';
+												echo "<p><li>";
+												echo '<p style="font-size:24pt;"><u><a href="event_profile.php?eid=' . $row['eid'] . '">';
 												print $row['event_name'] . "\t";
-												echo "</a>";
-												echo "</p></li>";
+												echo "</a></u></p>";
+												echo "<p class=\"date\"><b>";
+												print $row['event_date'] . "\t";
+												echo "</b></a></p><br><br><p>";
+												print $row['description'];
+												echo '<br>';
+												echo "</li></p>";
 											}
 										}
 										?>
