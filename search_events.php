@@ -145,31 +145,25 @@ if (isset($_POST['submit'])) {
 							<section id="content">
 								<div>
 									<header>
-										<h2>Search Results for <?php print $keywords?></h2>
+										<h2>Search Results</h2>
 									</header>
-									<p> Public: <?php print $public?> <br>
-										Private: <?php print $private?> <br>
-										RSO: <?php print $rso?> <br>
-										Category: <?php print $category?> <br>
-										Start Date: <?php print $start_date?> <br>
-										End Date: <?php print $end_date?> <br>
-
-										<?php print $public_search_query?><br><br><br>
-										<?php print $private_search_query?><br><br><br>
-										<?php print $rso_search_query?><br><br>
+									<p>
+									<ul class="style3">
 										<?php $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 										$sth_public=$dbh->prepare($public_search_query);
 										if($public) {
 											$sth_public->execute();
 											while ($row = $sth_public->fetch(PDO::FETCH_ASSOC)) {
-												echo "<li>";
-												echo "<p class=\"date\"><a href=\"#\"><b>";
+												echo "<p><li>";
+												echo "<p class=\"date\"><b>";
 												print $row['event_date'] . "\t";
 												echo "</b></a></p>";
-												echo '<p><a href="event_profile.php?eid=' . $row['eid'] . '">';
+												echo '<p><a style="color:black; font-size=16" href="event_profile.php?eid=' . $row['eid'] . '">';
 												print $row['event_name'] . "\t";
-												echo "</a>";
-												echo "</p></li>";
+												echo "</a><br>";
+												print $row['description'];
+												echo '<br>';
+												echo "</li></p>";
 											}
 										}
 										if($private) {
