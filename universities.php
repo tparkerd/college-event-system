@@ -1,5 +1,4 @@
 <?php session_start();
-// TODO(timp): decrement a university's num_student count when someone switches university (maybe modify trigger to be AFTER UPDATE ON affiliates_university)
 // TODO(timp): implement a check for listing only approved universities (may need additional relationship in DB)
 // Check if the form was posted
 if (!empty($_POST))
@@ -26,83 +25,81 @@ if (!empty($_POST))
 		$error_type = $e->errorInfo[0];
 	}
 
-		// Check if the student is already a member of said university
-		if(!isset($error_type)) {
-			// Declare the reponse
-			$response = array();
+	// If successfully connected to the database...
+	if(!isset($error_type)) {
+		// Declare the reponse
+		$response = array();
 
-			// Start checks
-			// Is user already affiliated with a university?
-			try {
-				$sql = "SELECT university_name FROM affiliates_university WHERE sid = :id";
-				$stmt = $pdo->prepare($sql);
-				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-				$stmt->execute();
-				$response['university_name'] = $stmt->fetchColumn();
-			} catch (PDOException $e) {
-				$response['error'] = $e->errorInfo[1];
-			}
+		// Start checks
+		// Is user already affiliated with a university?
+		try {
+			$sql = "SELECT university_name FROM affiliates_university WHERE sid = :id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+			$stmt->execute();
+			$response['university_name'] = $stmt->fetchColumn();
+		} catch (PDOException $e) {
+			$response['error'] = $e->errorInfo[1];
+		}
 
-			// If they are not assigned a university yet
-			if (isset($response['university_name'])) {
-				// If the user already is a student of the university
-				if ($response['university_name'] == $_POST['university_name'])
-				{
-					// ERROR: Student already belongs to the university, do nothing
-					$response['message'] = "You are already a student of " . $_POST['university_name'];
+		// If they are not assigned a university yet
+		if ($response['university_name']) {
+			// If the user already is a student of the university
+			if ($response['university_name'] == $_POST['university_name'])
+			{
+				// ERROR: Student already belongs to the university, do nothing
+				$response['message'] = "You are already a student of " . $_POST['university_name'];
 
-				// Student is switching universities
-				} else {
-					try {
-						// Update the student's university attribute
-						$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
-						$stmt = $pdo->prepare($sql);
-						$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-						$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-						$stmt->execute();
-
-						// Update affiliates_university
-						$sql = "UPDATE affiliates_university SET university_name = :university_name WHERE sid = :id";
-						$stmt = $pdo->prepare($sql);
-						$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-						$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-						$stmt->execute();
-					}	catch (PDOException $e) {
-						// Get the error code
-						$response['error'] = $e->errorInfo[1];
-					}
-
-					$response['message'] = "You have successfully switched to " . $_POST['university_name'];
-
-				}
+			// Student is switching universities
 			} else {
-				// Otherwise, the student does not have a university set.
-				// Therefore, assign them to the university of their liking
-				// UPDATE student & INSERT affiliates_university
 				try {
 					// Update the student's university attribute
 					$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
 					$stmt = $pdo->prepare($sql);
-					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
 					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
 					$stmt->execute();
 
-					// Affiliate the user with the university to increase student count
-					$sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
+					// Update affiliates_university
+					$sql = "UPDATE affiliates_university SET university_name = :university_name WHERE sid = :id";
 					$stmt = $pdo->prepare($sql);
-					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
 					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
 					$stmt->execute();
-
-					$response['message'] = "You have successfully joined " . $_POST['university_name'];
-				} catch (PDOException $e) {
-					// Get the error code
+				}	catch (PDOException $e) {
 					$response['error'] = $e->errorInfo[1];
 				}
+				$response['message'] = "You have successfully switched to " . $_POST['university_name'];
+
 			}
+		} else {
+			// Otherwise, the student does not have a university set.
+			// Therefore, assign them to the university of their liking
+			// UPDATE student & INSERT affiliates_university
+			try {
+				// Update the student's university attribute
+				$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+				$stmt->execute();
+
+				// Affiliate the user with the university to increase student count
+				$sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+				$stmt->execute();
+
+				$response['message'] = "You have successfully joined " . $_POST['university_name'];
+			} catch (PDOException $e) {
+				// Get the error code
+				$response['error'] = $e->errorInfo[1];
+			}
+		}
 
 		// Return the message to the AJAX call
-		echo json_encode($response['message']);
+		echo json_encode($response);
 		exit;
 	}
 }
@@ -170,13 +167,11 @@ if (!empty($_POST))
 					encode		: true
 				})
 					.done(function(data) {
-						console.log('success')
 							console.log(data)
-							$('#form_join_university').parent().html(data)
+							$('#form_join_university').parent().html(data.message)
 
 					})
 					.fail(function(data) {
-						console.log('failure')
 						console.log(data)
 					})
 					event.preventDefault()
