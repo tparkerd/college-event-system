@@ -201,20 +201,27 @@ if (isset($_POST['submit_comment'])) {
 										$sql="SELECT * FROM comments WHERE eid='".$event_id."'";
 										$sth=$dbh->prepare($sql);
 										foreach ($dbh->query($sql) as $row) {
-											echo '<p><div id="single_comment_';
+											echo '<div id="single_comment_';
 											print $_SESSION['id'];
 											echo '">';
+											echo '<div style="float:right">';
+											if($row['sid'] == $_SESSION['id']){
+												echo '<button style="font-size:smaller;float:left;" class="smallest-button" onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
+												echo '<button style="margin-left:20px;font-size:smaller;" class="smallest-button" onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
+
+											}
+											echo '</div>';
+											echo '<div style="float:left;"><p style="font-size:large;">';
+											print "Posted on: ".date('M j Y g:i A', strtotime($row['ctimestamp']));
+											echo '<br>';
 											print "Rating: ".$row['rating'];
 											echo '<br>';
 											print $row['text'];
-											echo '<br>';
-											print "Posted on: ".date('M j Y g:i A', strtotime($row['ctimestamp']));
-											echo '<br>';
-											if($row['sid'] == $_SESSION['id']){
-												echo '<br><button onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
-												echo '<br><button onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
+											//if($row['sid'] == $_SESSION['id']){
+											//	echo '<button style="font-size:smaller;" class="smallest-button" onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
+											//	echo '<button style="margin-left:20px;font-size:smaller;" class="smallest-button" onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
 
-											}
+											//}
 											echo '</div></p>';
 										}
 										$dbh=null;

@@ -670,6 +670,26 @@ ul.style3 .first {
 			cursor: pointer;
 		}
 
+.smallest-button{
+	position: relative;
+	display: inline-block;
+	margin-top: 1em;
+	padding: .5em .5em;
+	background: #323338;
+	border-radius: 4px;
+	text-decoration: none;
+	text-transform: uppercase;
+	font-size: .8em;
+	color: #FFF;
+	-moz-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	-webkit-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	-o-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	-ms-transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	transition: color 0.35s ease-in-out, background-color 0.35s ease-in-out;
+	cursor: pointer;
+}
+
+
 
 .button-large{
 	position: relative;
