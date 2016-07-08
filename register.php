@@ -1,3 +1,56 @@
+<?php session_start();
+// TODO(timp): Implement check if student id was already used
+	$error = array();
+  if (!empty($_POST)) {
+    // Connect to database
+    $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Collect Input Values
+    $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $sid = $_POST['sid'];
+
+    // Try to create user
+    try {
+      $sql="INSERT INTO student(sid, given_name, family_name, email, pword, university) VALUES (:sid, :fname, :lname, :email, :pword, :university)";
+      $sth=$dbh->prepare($sql);
+      $sth->bindParam(':sid',   $sid,      PDO::PARAM_STR, 8);
+      $sth->bindParam(':fname', $fname,    PDO::PARAM_STR, 35);
+      $sth->bindParam(':lname', $lname,    PDO::PARAM_STR, 35);
+      $sth->bindParam(':email', $email,    PDO::PARAM_STR, 90);
+      $sth->bindParam(':pword', $password, PDO::PARAM_STR, 100);
+
+      // If an initial university was chosen, include it at creation
+      if(!empty($_POST['university']))
+        $sth->bindParam(':university', $_POST['university'], PDO::PARAM_STR, 100);
+      else
+        $sth->bindValue(':university', null, PDO::PARAM_INT);
+
+      $sth->execute();
+    } catch (PDOException $e) {
+      $error = $e;
+    }
+
+
+    // If a university was chosen, make sure to affiliate it with the student
+    if(!empty($_POST['university'])) {
+      try {
+        // Affiliate the user with the university to increase student count
+        $sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':id', $sid, PDO::PARAM_STR);
+        $stmt->bindParam(':university_name', $_POST['university'], PDO::PARAM_STR);
+        $stmt->execute();
+      } catch (PDOException $e) {
+        $error = $e;
+      }
+    }
+  }
+?>
+
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -49,7 +102,7 @@
 	</div>
 	<!-- /Header -->
 
-			
+
 			<div id="page">
 				<div class="container">
 					<div class="row">
@@ -59,7 +112,7 @@
 									<h2 class="centered">Register Today</h2>
 								</header>
 
-								<form class="pure-form centered" action="create_user.php" method="POST">
+								<form class="pure-form centered" action="" method="POST">
 									<fieldset>
 										<legend>Register with us today to gain access to more events!</legend>
 										<br><input type="text" name="fname" style="width:25%;" placeholder="First Name" required>
@@ -79,20 +132,33 @@
 										$stmt->execute();
 										$unames=$stmt->fetchAll();
 										?>
-										<select style="width:25%;padding-bottom:5px" id="university" placeholder="University">
+										<select name="university" style="width:25%;padding-bottom:5px" id="university" placeholder="University">
+											<option value=""></option>
 											<?php foreach($unames as $uname):?>
 												<option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
 											<?php endforeach; ?>
 										</select>
 										<br>
 										<button name="btn-signup" type="submit" class="small-button">Submit</button>
+										<?php
+											if (!empty($_POST)) {
+												if(empty($error))
+												print "<br><br>Your registration was successful!";
+												else {
+													print "<br><br>Sorry, there was an error with your registration.";
+													echo "<br>";
+													print "Make sure you are using the proper Student ID and try again.";
+													echo "<br>";
+												}
+											}
+										?>
 									</fieldset>
 								</form>
 							</section>
 						</div>
 					</div>
 
-				</div>	
+				</div>
 			</div>
 
 
@@ -101,7 +167,7 @@
 				<div class="container">
 				</div>
 			</div>
-			
+
 		</div>
 	</body>
 </html>
