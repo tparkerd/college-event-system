@@ -194,38 +194,38 @@ if (isset($_POST['submit_comment'])) {
 							</section>
 							<section id="list_comments">
 								<p>
+								<ul class="style3">
 									<?php
 										date_default_timezone_set('America/New_York');
 										$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-
 										$sql="SELECT * FROM comments WHERE eid='".$event_id."'";
 										$sth=$dbh->prepare($sql);
 										foreach ($dbh->query($sql) as $row) {
+											$c_sid = $row['sid'];
+											$sql_commenter_name = "SELECT * FROM student WHERE sid='".$c_sid."'";
+											$prep_commenter_name = $dbh->prepare($sql_commenter_name);
+											$prep_commenter_name->execute();
+											$result = $prep_commenter_name->fetch(PDO::FETCH_ASSOC);
 											echo '<div id="single_comment_';
 											print $_SESSION['id'];
-											echo '">';
-											echo '<div style="float:right">';
-											if($row['sid'] == $_SESSION['id']){
-												echo '<button style="font-size:smaller;float:left;" class="smallest-button" onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
-												echo '<button style="margin-left:20px;font-size:smaller;" class="smallest-button" onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
-
-											}
-											echo '</div>';
-											echo '<div style="float:left;"><p style="font-size:large;">';
-											print "Posted on: ".date('M j Y g:i A', strtotime($row['ctimestamp']));
-											echo '<br>';
+											echo '"><li>';
+											echo '<div><p style="font-size:large;"><b>';
+											print "Posted on ".date('F j, Y g:i A', strtotime($row['ctimestamp']));
+											print " by ".$result['given_name'];
+											echo '</b><br>';
 											print "Rating: ".$row['rating'];
 											echo '<br>';
 											print $row['text'];
-											//if($row['sid'] == $_SESSION['id']){
-											//	echo '<button style="font-size:smaller;" class="smallest-button" onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
-											//	echo '<button style="margin-left:20px;font-size:smaller;" class="smallest-button" onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
-
-											//}
-											echo '</div></p>';
+											echo '</div><br>';
+											echo '<div style="float:right">';
+											if($row['sid'] == $_SESSION['id']){
+												echo '<button style="font-size:smaller;display:inline-block;" class="smallest-button" onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
+												echo '<button style="margin-left:20px;font-size:smaller;display:inline-block;" class="smallest-button" onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
+											}
+											echo '</div></li></p>';
 										}
-										$dbh=null;
 										?>
+									</ul>
 								</p>
 							</section>
 						</div>
