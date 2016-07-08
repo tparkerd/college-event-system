@@ -1,4 +1,113 @@
-<?php session_start();?>
+<?php session_start();
+// TODO(timp): decrement a university's num_student count when someone switches university (maybe modify trigger to be AFTER UPDATE ON affiliates_university)
+// TODO(timp): implement a check for listing only approved universities (may need additional relationship in DB)
+// Check if the form was posted
+if (!empty($_POST))
+{
+	// Check if a user is logged in
+	if(!isset($_SESSION['id']))
+	{
+		echo json_encode("Please log in in order to join a university.");
+		exit;
+	}
+
+	// Connect to database
+	$host = 'sdickerson.ddns.net';
+	$port = '3306';
+	$db   = 'ces';
+	$user = 'root';
+	$pass = 'S#8roN*PJTMQWJ4m';
+	$charset = 'utf8';
+
+	try {
+		$pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch(PDOException $e) {
+		$error_type = $e->errorInfo[0];
+	}
+
+		// Check if the student is already a member of said university
+		if(!isset($error_type)) {
+			// Declare the reponse
+			$response = array();
+
+			// Start checks
+			// Is user already affiliated with a university?
+			try {
+				$sql = "SELECT university_name FROM affiliates_university WHERE sid = :id";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+				$stmt->execute();
+				$response['university_name'] = $stmt->fetchColumn();
+			} catch (PDOException $e) {
+				$response['error'] = $e->errorInfo[1];
+			}
+
+			// If they are not assigned a university yet
+			if (isset($response['university_name'])) {
+				// If the user already is a student of the university
+				if ($response['university_name'] == $_POST['university_name'])
+				{
+					// ERROR: Student already belongs to the university, do nothing
+					$response['message'] = "You are already a student of " . $_POST['university_name'];
+
+				// Student is switching universities
+				} else {
+					try {
+						// Update the student's university attribute
+						$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
+						$stmt = $pdo->prepare($sql);
+						$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+						$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+						$stmt->execute();
+
+						// Update affiliates_university
+						$sql = "UPDATE affiliates_university SET university_name = :university_name WHERE sid = :id";
+						$stmt = $pdo->prepare($sql);
+						$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+						$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+						$stmt->execute();
+					}	catch (PDOException $e) {
+						// Get the error code
+						$response['error'] = $e->errorInfo[1];
+					}
+
+					$response['message'] = "You have successfully switched to " . $_POST['university_name'];
+
+				}
+			} else {
+				// Otherwise, the student does not have a university set.
+				// Therefore, assign them to the university of their liking
+				// UPDATE student & INSERT affiliates_university
+				try {
+					// Update the student's university attribute
+					$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+					$stmt->execute();
+
+					// Affiliate the user with the university to increase student count
+					$sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
+					$stmt = $pdo->prepare($sql);
+					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+					$stmt->execute();
+
+					$response['message'] = "You have successfully joined " . $_POST['university_name'];
+				} catch (PDOException $e) {
+					// Get the error code
+					$response['error'] = $e->errorInfo[1];
+				}
+			}
+
+		// Return the message to the AJAX call
+		echo json_encode($response['message']);
+		exit;
+	}
+}
+
+?>
 <!DOCTYPE HTML>
 <!--
 	Synchronous by TEMPLATED
@@ -26,7 +135,7 @@
 	</noscript>
 	<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 	<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
-	<script>
+	<script type="text/javascript">
 		function getUniversityProfile(name) {
 			if (name == "") {
 				name='University of Central Florida';
@@ -46,6 +155,34 @@
 			xmlhttp.open("GET", "get_university.php?q="+name,true);
 			xmlhttp.send();
 		}
+
+		// AJAX call to same page to join university
+		$(function() {
+			$('#form_join_university').submit(function(event) {
+				var formData = {
+					'university_name' : $('select[name=university_name]').val()
+				}
+				$.ajax({
+					type			: 'POST',
+					url				: '',
+					data			: formData,
+					dataType	: 'json',
+					encode		: true
+				})
+					.done(function(data) {
+						console.log('success')
+							console.log(data)
+							$('#form_join_university').parent().html(data)
+
+					})
+					.fail(function(data) {
+						console.log('failure')
+						console.log(data)
+					})
+					event.preventDefault()
+			})
+		})
+
 	</script>
 </head>
 <body>
@@ -134,7 +271,7 @@
 							<h2 class="centered">Find a University to Join</h2>
 						</header>
 
-						<form class="pure-form centered">
+						<form id="form_join_university" class="pure-form centered">
 							<fieldset>
 								<legend>Add a university to your profile to see more events</legend>
 								<br><br>
@@ -145,7 +282,7 @@
 								$stmt->execute();
 								$unames=$stmt->fetchAll();
 								?>
-								<select onchange="getUniversityProfile(this.value)" style="width:260px;padding-bottom:5px" id="university" placeholder="University">
+								<select name="university_name" onchange="getUniversityProfile(this.value)" style="width:260px;padding-bottom:5px" id="university" placeholder="University">
 									<?php foreach($unames as $uname):?>
 										<option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
 									<?php endforeach; ?>
