@@ -172,7 +172,6 @@ if(!empty($_POST)) {
     }
   }
 
-
   // Find out the super admin's university
   try {
     $sql = "SELECT university_name FROM creates_university WHERE superadmin_id = :id";
