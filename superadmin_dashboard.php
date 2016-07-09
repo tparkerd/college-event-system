@@ -135,9 +135,47 @@ if(!empty($_POST)) {
 
         // If it's a rejection, do nothing? Do I delete the event?
       } elseif ($_POST['action'] == 'reject') {
-        // Maaaaaybe delete?
-        echo json_encode('What do you want me to do to reject something? Delete it from the e(EVENT) table?');
-        exit;
+        $response['action'] = 'Delete';
+        $response['Eid'] = $_POST['eid'];
+        $response['$_POST'] = $_POST;
+
+        try {
+          // Remove relationships with an EVENT (at, comments, private_event, public_event, rso_event)
+          $sql = "DELETE FROM at WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid']);
+          $stmt->execute();
+          $sql = "DELETE FROM comments WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid']);
+          $stmt->execute();
+          $sql = "DELETE FROM private_event WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid']);
+          $stmt->execute();
+          $sql = "DELETE FROM public_event WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid']);
+          $stmt->execute();
+          $sql = "DELETE FROM rso_event WHERE eid = :id"; // may be unnecessary
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid']);
+          $stmt->execute();
+          $sql = "DELETE FROM creates_event WHERE eid = :id"; // may be unnecessary
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid']);
+          $stmt->execute();
+
+          // Remove RSO
+          $sql = "DELETE FROM e WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid']);
+          $stmt->execute();
+
+        } catch (PDOException $e) {
+          $response['error'] = $e->getMessage();
+        }
+
       }
       echo json_encode($response);
       exit;
@@ -163,8 +201,40 @@ if(!empty($_POST)) {
 
         // If it's a rejection, do nothing? Do I delete the event?
       } elseif ($_POST['action'] == 'reject') {
-        // Maaaaaybe delete?
-        echo json_encode('What do you want me to do to reject something? Delete it from the e(EVENT) table?');
+        $response['action'] = 'Delete';
+        $response['RSO name'] = $_POST['rso_name'];
+        $response['$_POST'] = $_POST;
+
+        try {
+          // Remove relationships with the user and its RSO
+          $sql = "DELETE FROM creates_rso WHERE rso_name = :rso_name";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('rso_name', $_POST['rso_name']);
+          $stmt->execute();
+          $sql = "DELETE FROM owns_rso WHERE rso_name = :rso_name";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('rso_name', $_POST['rso_name']);
+          $stmt->execute();
+          $sql = "DELETE FROM affiliates_rso WHERE rso_name = :rso_name";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('rso_name', $_POST['rso_name']);
+          $stmt->execute();
+          $sql = "DELETE FROM joins_rso WHERE rso_name = :rso_name"; // I have no idea why there is an affiliates_rso and joins_rso... o.O
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('rso_name', $_POST['rso_name']);
+          $stmt->execute();
+
+          // Remove RSO
+          $sql = "DELETE FROM rso WHERE rso_name = :rso_name";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('rso_name', $_POST['rso_name']);
+          $stmt->execute();
+
+        } catch (PDOException $e) {
+          $response['error'] = $e->getMessage();
+        }
+
+        echo json_encode($response);
         exit;
       }
       echo json_encode($response);
@@ -186,17 +256,23 @@ if(!empty($_POST)) {
   // Get a list of all events associated with the university
   try {
     // Get a list of any event that has not yet been approved
-    $sql = "SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM public_event p WHERE e.eid = p.eid)
-            AND e.eid NOT IN (SELECT pab.eid FROM public_approved_by pab WHERE e.eid = pab.eid)
-            AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
+    $sql = "SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone
+            FROM e
+            WHERE e.eid IN (SELECT p.eid FROM public_event p WHERE e.eid = p.eid)
+              AND e.eid NOT IN (SELECT pab.eid FROM public_approved_by pab WHERE e.eid = pab.eid)
+              AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
             UNION
-            SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM private_event p WHERE e.eid = p.eid)
-                    AND e.eid NOT IN (SELECT pab.eid FROM private_approved_by pab WHERE e.eid = pab.eid)
-                    AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
+            SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone
+            FROM e
+            WHERE e.eid IN (SELECT p.eid FROM private_event p WHERE e.eid = p.eid)
+              AND e.eid NOT IN (SELECT pab.eid FROM private_approved_by pab WHERE e.eid = pab.eid)
+              AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
             UNION
-            SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM rso_event p WHERE e.eid = p.eid)
-                    AND e.eid NOT IN (SELECT reab.eid FROM rso_e_approved_by reab WHERE e.eid = reab.eid)
-                    AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
+            SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone
+            FROM e
+            WHERE e.eid IN (SELECT p.eid FROM rso_event p WHERE e.eid = p.eid)
+              AND e.eid NOT IN (SELECT reab.eid FROM rso_e_approved_by reab WHERE e.eid = reab.eid)
+              AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
             ";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':university_name', $university_name, PDO::PARAM_STR);
@@ -294,7 +370,7 @@ if(!empty($_POST)) {
                                   "November", "December"
                                 ];
                 var month = monthNames[datetime.getMonth()]
-                var date = datetime.getDay() + ' ' + month + ' ' + datetime.getFullYear()
+                var date = datetime.getDate() + ' ' + month + ' ' + datetime.getFullYear()
 
                 // Insert date into table
                 table.append(tr.append(td.text(date)))
@@ -349,7 +425,8 @@ if(!empty($_POST)) {
 
                 // Third column (Creator email)
                 // Add to table
-                table.append(tr.append($(document.createElement('td')).text(row.email)))
+                table.append(tr.append($(document.createElement('td')).append($(document.createElement('a')).attr('href', 'mailto:' + row.email).text(row.email))))
+                // table.append(tr.append($(document.createElement('td')).append($(document.createElement('a')).attr('href', 'mailto:' + row.contact_email).text(row.contact_email))))
 
                 // Fourth column (Action Buttons)
                 var td = $(document.createElement('td'))
@@ -588,14 +665,9 @@ if(!empty($_POST)) {
 
                         </tbody>
                       </table>
-                      <h4>Notes</h4>
-                      <p>
-                        Events from the user's initial university show. Keep in mind that because universities.php still supports super admins switching universities, this is bugged.
-                        It will always show the events from the starting university. AND, the have to have been the one to create the university.
-                      </p>
-                      <ol>TODOs
-                        <li>Have the table also populate with private and RSO events.</li>
-                        <li>figure out what we want to do with rejection (delete!?!?)</li>
+                      <h4>TODOs</h4>
+                      <ol>
+                        <li>Do we want to create RSO profile pages to link to?</li>
                       </ol>
                     </section>
                 </div>
