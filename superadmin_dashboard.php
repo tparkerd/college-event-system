@@ -24,112 +24,10 @@ if(!empty($_POST)) {
     $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   } catch(PDOException $e) {
-    $response['error'] = $e->errorInfo[1];
+    $response['error'] = $e->getMessage();
   }
 
-
-  // Is this a call to approve or reject an event?
-  if(isset($_POST['action'])) {
-
-    // If it's an approval, insert the event into the approved event of its type
-    if ($_POST['action'] == 'approve') {
-      // Is it a public event?
-      try {
-        $sql = "SELECT COUNT(*) FROM public_event WHERE eid = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam('id', $_POST['eid'], PDO::PARAM_STR);
-        $stmt->execute();
-        $response['event_type'] = $stmt->fetchColumn();
-      } catch (PDOException $e) {
-        $response = $e->errorInfo;
-      }
-
-      // If it is public...
-      if($response['event_type']) {
-        try {
-          $response['message'] = 'trying to insert';
-          $sql = "INSERT INTO public_approved_by VALUES(:eid, :superadmin_id)";
-          $stmt = $pdo->prepare($sql);
-          $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
-          $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
-          $response = $stmt->execute();
-        } catch (PDOException $e) {
-          $response = $e->errorInfo[1];
-        }
-        echo json_encode($response);
-        exit;
-      }
-
-      // Is it a private event?
-      try {
-        $sql = "SELECT COUNT(*) FROM private_event WHERE eid = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam('id', $_POST['eid'], PDO::PARAM_STR);
-        $stmt->execute();
-        $response['event_type'] = $stmt->fetchColumn();
-      } catch (PDOException $e) {
-        $response = $e->errorInfo;
-      }
-
-      // If it is private...
-      if($response['event_type']) {
-        try {
-          $response['message'] = 'trying to insert';
-          $sql = "INSERT INTO private_approved_by VALUES(:eid, :superadmin_id)";
-          $stmt = $pdo->prepare($sql);
-          $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
-          $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
-          $response = $stmt->execute();
-        } catch (PDOException $e) {
-          $response = $e->errorInfo[1];
-        }
-        echo json_encode($response);
-        exit;
-      }
-
-      // Is it an rso event?
-      try {
-        $sql = "SELECT COUNT(*) FROM rso_event WHERE eid = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam('id', $_POST['eid'], PDO::PARAM_STR);
-        $stmt->execute();
-        $response['event_type'] = $stmt->fetchColumn();
-      } catch (PDOException $e) {
-        $response = $e->errorInfo;
-      }
-
-      // If it is private...
-      if($response['event_type']) {
-        try {
-          $response['message'] = 'trying to insert';
-          $sql = "INSERT INTO rso_approved_by VALUES(:eid, :superadmin_id)";
-          $stmt = $pdo->prepare($sql);
-          $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
-          $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
-          $response = $stmt->execute();
-        } catch (PDOException $e) {
-          $response = $e->errorInfo[1];
-        }
-        echo json_encode($response);
-        exit;
-      }
-
-
-    // If it's a rejection, do nothing? Do I delete the event?
-    } elseif ($_POST['action'] == 'rejection') {
-      // Maaaaaybe delete?
-      echo json_encode('What do you want me to do to reject something? Delete it from the e(EVENT) table?');
-      exit;
-    }
-    echo json_encode($response);
-    exit;
-
-
-  }
-
-
-
-  // Make sure that the user is a super admin
+// Make sure that the user is a super admin
   try {
     $sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
     $stmt = $pdo->prepare($sql);
@@ -137,12 +35,143 @@ if(!empty($_POST)) {
     $stmt->execute();
     $result = $stmt->fetchColumn();
   } catch (PDOException $e) {
-    $response['error'] = $e->errorInfo[1];
+    $response['error'] = $e->getMessage()[1];
   }
 
   // If they aren't a super admin, kick them out (this caused problems before, so this may need to be watched)
   if (!$result)
     echo '<META HTTP-EQUIV=REFRESH CONTENT="0; permissions.php">';
+
+  // Is this a call to approve or reject an event?
+  if(isset($_POST['action'])) {
+
+    // If it's an event action
+    if ($_POST['type'] == 'event') {
+      // If it's an approval, insert the event into the approved event of its type
+      if ($_POST['action'] == 'approve') {
+        $response['$_POST'] = $_POST;
+        // Is it a public event?
+        try {
+          $sql = "SELECT COUNT(*) FROM public_event WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid'], PDO::PARAM_STR);
+          $stmt->execute();
+          $response['event_type'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+          $response = $e->getMessage();
+        }
+        $response['Public?'] = $response['event_type'];
+        // If it is public...
+        if($response['event_type']) {
+          try {
+            $sql = "INSERT INTO public_approved_by VALUES(:eid, :superadmin_id)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
+            $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
+            $response = $stmt->execute();
+          } catch (PDOException $e) {
+            $response = $e->getMessage();
+          }
+          echo json_encode($response);
+          exit;
+        }
+
+        // Is it a private event?
+        try {
+          $sql = "SELECT COUNT(*) FROM private_event WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid'], PDO::PARAM_STR);
+          $stmt->execute();
+          $response['event_type'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+          $response = $e->getMessage();
+        }
+
+        $response['Private?'] = $response['event_type'];
+        // If it is private...
+        if($response['event_type']) {
+          try {
+            $sql = "INSERT INTO private_approved_by VALUES(:eid, :superadmin_id)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
+            $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
+            $response = $stmt->execute();
+          } catch (PDOException $e) {
+            $response = $e->getMessage();
+          }
+          echo json_encode($response);
+          exit;
+        }
+
+        // Is it an rso event?
+        try {
+          $sql = "SELECT COUNT(*) FROM rso_event WHERE eid = :id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam('id', $_POST['eid'], PDO::PARAM_STR);
+          $stmt->execute();
+          $response['event_type'] = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+          $response = $e->getMessage();
+        }
+
+        $response['RSO?'] = $response['event_type'];
+        // If it is rso...
+        if($response['event_type']) {
+          try {
+            $sql = "INSERT INTO rso_approved_by VALUES(:eid, :superadmin_id)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
+            $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
+            $response = $stmt->execute();
+          } catch (PDOException $e) {
+            $response = $e->getMessage();
+          }
+
+
+          echo json_encode($response);
+          exit;
+        }
+
+
+        // If it's a rejection, do nothing? Do I delete the event?
+      } elseif ($_POST['action'] == 'reject') {
+        // Maaaaaybe delete?
+        echo json_encode('What do you want me to do to reject something? Delete it from the e(EVENT) table?');
+        exit;
+      }
+      echo json_encode($response);
+      exit;
+
+    // But if its an RSO...
+  } elseif ($_POST['type'] == 'rso') {
+      // If it's an approval, insert the event into the approved event of its type
+      if ($_POST['action'] == 'approve') {
+
+          try {
+            $response['message'] = 'trying to insert';
+            $response['superadmin id'] = $_SESSION['id'];
+            $sql = "INSERT INTO rso_approved_by(rso_name, superadmin_id) VALUES(:rso_name, :superadmin_id)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam('rso_name', $_POST['rso_name'], PDO::PARAM_STR);
+            $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
+            $response = $stmt->execute();
+          } catch (PDOException $e) {
+            $response['error'] = $e->getMessage();
+          }
+          echo json_encode($response);
+          exit;
+
+        // If it's a rejection, do nothing? Do I delete the event?
+      } elseif ($_POST['action'] == 'reject') {
+        // Maaaaaybe delete?
+        echo json_encode('What do you want me to do to reject something? Delete it from the e(EVENT) table?');
+        exit;
+      }
+      echo json_encode($response);
+      exit;
+    }
+  }
+
 
   // Find out the super admin's university
   try {
@@ -150,9 +179,9 @@ if(!empty($_POST)) {
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
     $stmt->execute();
-    $university_name = $response['university_name'] = $stmt->fetchColumn();
+    $university_name = $stmt->fetchColumn();
   } catch (PDOException $e) {
-    $response['error'] = $e->errorInfo[1];
+    $response['error'] = $e->getMessage();
   }
 
   // Get a list of all events associated with the university
@@ -175,21 +204,23 @@ if(!empty($_POST)) {
     $stmt->execute();
     $response['events'] = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
   } catch (PDOException $e) {
-    $response['error'] = $e->errorInfo[1];
+    $response['error'] = $e->getMessage()[1];
   }
 
   // Get a list of all RSOs associated with the university
   try {
     // Get a list of any RSO that has not yet been approved
-    $sql = "SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM public_event p WHERE e.eid = p.eid)
-            AND e.eid NOT IN (SELECT pab.eid FROM public_approved_by pab WHERE e.eid = pab.eid)
-            AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)";
+    $sql = "SELECT r.rso_name, r.admin_id, s.given_name, s.family_name, s.email
+            FROM rso r, student s
+            WHERE r.rso_name NOT IN (SELECT rab.rso_name FROM rso_approved_by rab WHERE r.rso_name = rab.rso_name)
+              AND s.sid = r.admin_id
+              AND r.admin_id IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':university_name', $university_name, PDO::PARAM_STR);
     $stmt->execute();
     $response['rsos'] = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
   } catch (PDOException $e) {
-    $response['error'] = $e->errorInfo[1];
+    $response['error'] = $e->getMessage()[1];
   }
 
   echo json_encode($response);
@@ -281,7 +312,7 @@ if(!empty($_POST)) {
 
                 // Fifth column (Contact Email)
                 // Add to table
-                table.append(tr.append($(document.createElement('td')).text(row.contact_email)))
+                table.append(tr.append($(document.createElement('td')).append($(document.createElement('a')).attr('href', 'mailto:' + row.contact_email).text(row.contact_email))))
 
                 // Fifth column (Contact Phone)
                 // Add to table & format phone number (the formatting may need to be removed based on how numbers can be entered by the user)
@@ -296,6 +327,7 @@ if(!empty($_POST)) {
               })
 
 
+              // Construct RSO approval table
               var table = $('#rso_approval_table')
               if (rsos.length == 0) {
                   table.replaceWith($(document.createElement('p')).text('There are no RSOs pending approval at this time.'))
@@ -309,27 +341,22 @@ if(!empty($_POST)) {
                 var td = $(document.createElement('td'))
                 // Get name and make it a URL link to its page
                 var name = $(document.createElement('a')).attr('href', 'rso_profile.php?rso_name=' + row.rso_name).text(row.rso_name)
-
                 // Add to table
                 table.append(tr.append(td.append(name)))
 
+                // Second column (Creator name)
+                // Add to table
+                table.append(tr.append($(document.createElement('td')).text(row.given_name + ' ' + row.family_name)))
+
                 // Third column (Creator email)
                 // Add to table
-                table.append(tr.append($(document.createElement('td')).text(row.first_name + ' ' + row.last_name)))
+                table.append(tr.append($(document.createElement('td')).text(row.email)))
 
-                // Third column (Creator email)
-                // Add to table
-                table.append(tr.append($(document.createElement('td')).text(row.contact_email)))
-
-                // Fifth column (Contact Phone)
-                // Add to table & format phone number (the formatting may need to be removed based on how numbers can be entered by the user)
-                table.append(tr.append($(document.createElement('td')).text(row.contact_phone.replace(/[^0-9]/g, '').replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, '($1) $2-$3'))))
-
-                // Sixth column (Action Buttons)
+                // Fourth column (Action Buttons)
                 var td = $(document.createElement('td'))
                 var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Approve').attr('id', 'approval_' + row.rso_name).addClass('approval').addClass('rso')
                 table.append(tr.append(td.append(approve)))
-                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Reject').attr('id', 'rejection_' + row.eid).addClass('rejection').addClass('rso')
+                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Reject').attr('id', 'rejection_' + row.rso_name).addClass('rejection').addClass('rso')
                 table.append(tr.append(td.append(approve)))
               })
   					})
@@ -338,19 +365,12 @@ if(!empty($_POST)) {
   						console.log(data)
   					})
 
-
-
-
-
-
-
-
             // Whenever an event is approved...
-            $(document.body).on('click', '.approval', function(e) {
+            $(document.body).on('click', '.approval.event', function(e) {
               $.ajax({
       					type			: 'POST',
       					url				: '',
-      					data			: { 'action' : 'approve', 'eid' : e.target.id.split('_')[1] },
+      					data			: { 'action' : 'approve', 'type' : 'event', 'eid' : e.target.id.split('_')[1] },
       					dataType	: 'json',
                 encode		: true
               })
@@ -358,7 +378,6 @@ if(!empty($_POST)) {
                  // remove the tr from the table
                  $(e.target).parent().parent().remove();
                  console.log(data)
-                 console.log(rowparent)
                })
                .fail(function(data) {
                  // alert the user that it failed
@@ -368,11 +387,53 @@ if(!empty($_POST)) {
             })
 
             // Whenever an event is rejected...
-            $(document.body).on('click', '.rejection', function(e) {
+            $(document.body).on('click', '.rejection.event', function(e) {
               $.ajax({
       					type			: 'POST',
       					url				: '',
-      					data			: { 'action' : 'rejection', 'eid' : e.target.id.split('_')[1] },
+      					data			: { 'action' : 'reject', 'type' : 'event', 'eid' : e.target.id.split('_')[1] },
+      					dataType	: 'json',
+                encode		: true
+              })
+               .done(function(data) {
+                 // remove the tr from the table
+                 $(e.target).parent().parent().remove();
+                 console.log(data)
+               })
+               .fail(function(data) {
+                 // alert the user that it failed
+                 console.log('Failed ajax')
+                 console.log(data)
+               })
+            })
+
+            // Whenever an rso is approved...
+            $(document.body).on('click', '.approval.rso', function(e) {
+              $.ajax({
+      					type			: 'POST',
+      					url				: '',
+      					data			: { 'action' : 'approve', 'type' : 'rso', 'rso_name' : e.target.id.split('_')[1] },
+      					dataType	: 'json',
+                encode		: true
+              })
+               .done(function(data) {
+                 // remove the tr from the table
+                 $(e.target).parent().parent().remove();
+                 console.log(data)
+               })
+               .fail(function(data) {
+                 // alert the user that it failed
+                 console.log('Failed ajax')
+                 console.log(data)
+               })
+            })
+
+            // Whenever an rso is rejected...
+            $(document.body).on('click', '.rejection.rso', function(e) {
+              $.ajax({
+      					type			: 'POST',
+      					url				: '',
+      					data			: { 'action' : 'reject', 'type' : 'rso', 'rso_name' : e.target.id.split('_')[1] },
       					dataType	: 'json',
                 encode		: true
               })
@@ -428,6 +489,9 @@ if(!empty($_POST)) {
       /* Shift the first element of a table over a little to the right (Name column) */
       table tr td:first-child {
         padding-left: 1rem;
+      }
+      table tr td {
+        text-overflow: ellipsis;
       }
       .approval, .rejection {
         padding: 5px;
@@ -515,9 +579,6 @@ if(!empty($_POST)) {
                             </th>
                             <th>
                               Contact Email
-                            </th>
-                            <th>
-                              Contact Phone
                             </th>
                             <th>
                               Action
