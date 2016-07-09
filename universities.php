@@ -30,6 +30,24 @@ if (!empty($_POST))
 		// Declare the reponse
 		$response = array();
 
+		// See if the user is a super admin, if so, they can never change their university from their assigned one
+	  try {
+	    $sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
+	    $stmt = $pdo->prepare($sql);
+	    $stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+	    $stmt->execute();
+	    $result = $stmt->fetchColumn();
+	  } catch (PDOException $e) {
+	    $response['error'] = $e->errorInfo[1];
+	  }
+
+	  // If they aren't a super admin, do not allow him/her ot switch universities
+	  if ($result) {
+			$response['message'] = 'Since you are the super admin, you cannot switch universities.';
+			echo json_encode($response);
+			exit;
+		}
+
 		// Start checks
 		// Is user already affiliated with a university?
 		try {
