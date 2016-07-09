@@ -401,15 +401,7 @@ if(!empty($_POST)) {
                       <header>
                         <h2>Superadmin Dashboard</h2>
                       </header>
-                      <h4>Pending event approvals</h4>
-                      <p>
-                        In order for anything to show up, you have to be the superadmin for the university that any event is listed under. Right now, you have to had created the university.
-                        A super admin needs to either approve or reject(delete???) an event (private, public, rso) and RSO
-                      </p>
-                      <ul>TODOs
-                        <li>Try to tie in the accept and reject button into their EIDs (probably going to have to modify SQL query to provide that data as well)</li>
-                        <li>Add in functionality to approve or reject buttons (maybe an AJAX call and then a recall of on load script..somethignsomething)</li>
-                      </ul>
+                      <h4>Pending Events</h4>
                       <table id="event_approval_table">
                         <thead>
                           <tr>
@@ -440,6 +432,42 @@ if(!empty($_POST)) {
 
                         </tbody>
                       </table>
+
+                      <h4>Pending RSOs</h4>
+                      <table id="rso_approval_table">
+                        <thead>
+                          <tr>
+                            <th>
+                              Name
+                            </th>
+                            <th>
+                              Creator
+                            </th>
+                            <th>
+                              Contact Email
+                            </th>
+                            <th>
+                              Contact Phone
+                            </th>
+                            <th>
+                              Action
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                      </table>
+                      <h4>Notes</h4>
+                      <p>
+                        Events from the user's initial university show. Keep in mind that because universities.php still supports super admins switching universities, this is bugged.
+                        It will always show the events from the starting university. AND, the have to have been the one to create the university.
+                      </p>
+                      <ol>TODOs
+                        <li>Have the table also populate with private and RSO events.</li>
+                        <li>figure out what we want to do with rejection (delete!?!?)</li>
+                        <li>Pending RSOs are not done whatsoever :(</li>
+                      </ol>
                     </section>
                 </div>
             </div>
