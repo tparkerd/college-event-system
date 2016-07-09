@@ -157,23 +157,41 @@ if(!empty($_POST)) {
 
   // Get a list of all events associated with the university
   try {
-    // Get a list of any event that's listed in the public events (or any type that is, that is not listed in its respective sub-class)
+    // Get a list of any event that has not yet been approved
+    $sql = "SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM public_event p WHERE e.eid = p.eid)
+            AND e.eid NOT IN (SELECT pab.eid FROM public_approved_by pab WHERE e.eid = pab.eid)
+            AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
+            UNION
+            SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM private_event p WHERE e.eid = p.eid)
+                    AND e.eid NOT IN (SELECT pab.eid FROM private_approved_by pab WHERE e.eid = pab.eid)
+                    AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
+            UNION
+            SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM rso_event p WHERE e.eid = p.eid)
+                    AND e.eid NOT IN (SELECT reab.eid FROM rso_e_approved_by reab WHERE e.eid = reab.eid)
+                    AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)
+            ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':university_name', $university_name, PDO::PARAM_STR);
+    $stmt->execute();
+    $response['events'] = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+  } catch (PDOException $e) {
+    $response['error'] = $e->errorInfo[1];
+  }
+
+  // Get a list of all RSOs associated with the university
+  try {
+    // Get a list of any RSO that has not yet been approved
     $sql = "SELECT eid, event_name, event_date, event_start_time, event_end_time, event_category, contact_email, contact_phone FROM e WHERE e.eid IN (SELECT p.eid FROM public_event p WHERE e.eid = p.eid)
             AND e.eid NOT IN (SELECT pab.eid FROM public_approved_by pab WHERE e.eid = pab.eid)
             AND e.approved_by_admin IN (SELECT sid FROM affiliates_university WHERE university_name = :university_name)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':university_name', $university_name, PDO::PARAM_STR);
     $stmt->execute();
-    $result = $response['result'] = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    $response['rsos'] = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
   } catch (PDOException $e) {
     $response['error'] = $e->errorInfo[1];
   }
 
-  // TODO(timp): include private and RSO events in the query unless I need to separate them out
-
-
-  // Since this was an AJAX call, end the page here to avoid
-  // echo json_encode($response['message']);
   echo json_encode($response);
   exit;
 }
@@ -209,15 +227,19 @@ if(!empty($_POST)) {
   				})
   					.done(function(data) {
               // Remember to parse JSON data back from the AJAX call
-              data = JSON.parse(data.result)
-
+              events = JSON.parse(data.events)
+              rsos = JSON.parse(data.rsos)
+              console.log(data)
               // Get reference to event table
               var table = $('#event_approval_table')
 
-              // For each, build it's place in the table
-              data.forEach(function(row, index) {
-                console.log(row)
+              // If there are no results, replace the table with text
+              if (events.length == 0) {
+                  table.replaceWith($(document.createElement('p')).text('There are no events pending approval at this time.'))
+              }
 
+              // For each, build it's place in the table
+              events.forEach(function(row, index) {
                 // Make a new row
                 var tr = $(document.createElement('tr'))
 
@@ -263,13 +285,51 @@ if(!empty($_POST)) {
 
                 // Fifth column (Contact Phone)
                 // Add to table & format phone number (the formatting may need to be removed based on how numbers can be entered by the user)
-                table.append(tr.append($(document.createElement('td')).text(row.contact_phone.replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, '($1) $2-$3'))))
+                table.append(tr.append($(document.createElement('td')).text(row.contact_phone.replace(/[^0-9]/g, '').replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, '($1) $2-$3'))))
 
                 // Sixth column (Action Buttons)
                 var td = $(document.createElement('td'))
-                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Approve').attr('id', 'approval_' + row.eid).addClass('approval')
+                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Approve').attr('id', 'approval_' + row.eid).addClass('approval').addClass('event')
                 table.append(tr.append(td.append(approve)))
-                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Reject').attr('id', 'rejection_' + row.eid).addClass('rejection')
+                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Reject').attr('id', 'rejection_' + row.eid).addClass('rejection').addClass('event')
+                table.append(tr.append(td.append(approve)))
+              })
+
+
+              var table = $('#rso_approval_table')
+              if (rsos.length == 0) {
+                  table.replaceWith($(document.createElement('p')).text('There are no RSOs pending approval at this time.'))
+              }
+
+              rsos.forEach(function(row, index) {
+                // Make a new row
+                var tr = $(document.createElement('tr'))
+
+                // First column (RSO name)
+                var td = $(document.createElement('td'))
+                // Get name and make it a URL link to its page
+                var name = $(document.createElement('a')).attr('href', 'rso_profile.php?rso_name=' + row.rso_name).text(row.rso_name)
+
+                // Add to table
+                table.append(tr.append(td.append(name)))
+
+                // Third column (Creator email)
+                // Add to table
+                table.append(tr.append($(document.createElement('td')).text(row.first_name + ' ' + row.last_name)))
+
+                // Third column (Creator email)
+                // Add to table
+                table.append(tr.append($(document.createElement('td')).text(row.contact_email)))
+
+                // Fifth column (Contact Phone)
+                // Add to table & format phone number (the formatting may need to be removed based on how numbers can be entered by the user)
+                table.append(tr.append($(document.createElement('td')).text(row.contact_phone.replace(/[^0-9]/g, '').replace(/(\d\d\d)(\d\d\d)(\d\d\d\d)/, '($1) $2-$3'))))
+
+                // Sixth column (Action Buttons)
+                var td = $(document.createElement('td'))
+                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Approve').attr('id', 'approval_' + row.rso_name).addClass('approval').addClass('rso')
+                table.append(tr.append(td.append(approve)))
+                var approve = $(document.createElement('input')).attr('type', 'button').attr('value', 'Reject').attr('id', 'rejection_' + row.eid).addClass('rejection').addClass('rso')
                 table.append(tr.append(td.append(approve)))
               })
   					})
@@ -277,6 +337,13 @@ if(!empty($_POST)) {
               console.log('Failure')
   						console.log(data)
   					})
+
+
+
+
+
+
+
 
             // Whenever an event is approved...
             $(document.body).on('click', '.approval', function(e) {
@@ -335,7 +402,7 @@ if(!empty($_POST)) {
       table {
         width: 100%;
         margin: 2rem 0 1rem 0;
-        border: 1px solid rgb(31,31,31);
+        outline: 1px solid rgb(31,31,31);
       }
       table thead tr:first-child {
         background: rgb(31,31,31);
@@ -350,6 +417,9 @@ if(!empty($_POST)) {
       }
       table tr th {
         font-weight: 400;
+      }
+      table tbody tr:not(:last-child) { /* In case this doesn't work, nth-last-child(n+2)*/
+        border-bottom: 1px solid #d0d0d0;
       }
       table tbody tr td:nth-child(n+2) {
         text-align: center;
@@ -466,7 +536,6 @@ if(!empty($_POST)) {
                       <ol>TODOs
                         <li>Have the table also populate with private and RSO events.</li>
                         <li>figure out what we want to do with rejection (delete!?!?)</li>
-                        <li>Pending RSOs are not done whatsoever :(</li>
                       </ol>
                     </section>
                 </div>
