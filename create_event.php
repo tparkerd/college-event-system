@@ -8,7 +8,7 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if(!$row){
 	$url='permissions.php';
-	echo '<META HTTP-EQUIV=REFRESH CONTENT="1; '.$url.'">';
+	echo '<META HTTP-EQUIV=REFRESH CONTENT="0; '.$url.'">';
 }
 else
     echo '<title>College Events</title>';
@@ -182,7 +182,7 @@ else
 	</head>
 	<body>
 		<div id="wrapper">
-			
+
 			<!-- Header -->
 			<div id="header">
 				<div class="container">
@@ -204,7 +204,7 @@ else
 				</div>
 			</div>
 			<!-- /Header -->
-			
+
 			<div id="page">
 				<div class="container">
 					<div class="row">
@@ -291,7 +291,7 @@ else
 						</div>
 					</div>
 
-				</div>	
+				</div>
 			</div>
 
 
