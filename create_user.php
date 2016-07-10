@@ -1,4 +1,5 @@
-<?php
+<?php session_start();?>
+<?
     $error="";
     $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
     $fname = $_POST['fname'];

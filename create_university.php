@@ -1,7 +1,8 @@
 <?php
-session_start();
+session_start();?>
 // Check if a user is not logged in
 // If so, redirect them to the permissions page
+<?php 
 if(!isset($_SESSION['id']))
 {
   $url='permissions.php';

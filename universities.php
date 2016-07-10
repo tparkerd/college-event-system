@@ -1,6 +1,8 @@
-<?php session_start();
+<?php session_start();?>
+<?php
 // TODO(timp): implement a check for listing only approved universities (may need additional relationship in DB)
 // Check if the form was posted
+
 if (!empty($_POST))
 {
 	// Check if a user is logged in
