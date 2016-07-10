@@ -4,10 +4,10 @@
 $keywords = $category = $public = $private = $rso = $start_date = $end_date = "";
 $keywords_clause = $category_clause = $between_clause = $starting_clause = $ending_clause = "";
 if (isset($_POST['submit'])) {
-	$public_search_query = "SELECT * FROM public_event WHERE event_date >= DATE(NOW())";
-	$private_search_query = "SELECT * FROM private_event e WHERE event_date >= DATE(NOW()) AND (SELECT university FROM student WHERE sid = e.approved_by_admin) = (SELECT university FROM student WHERE sid='".$_SESSION['id']."')";
+	$public_search_query = "SELECT * FROM public_event ";
+	$private_search_query = "SELECT * FROM private_event e WHERE (SELECT university FROM student WHERE sid = e.approved_by_admin) = (SELECT university FROM student WHERE sid='".$_SESSION['id']."')";
 	$pattern = "^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$";
-	$rso_search_query = "SELECT * FROM rso_event WHERE event_date >= DATE(NOW()) AND (SELECT rso_eid FROM owns_event WHERE rso_name = (SELECT rso_name FROM affiliates_rso WHERE sid='".$_SESSION['id']."'))";
+	$rso_search_query = "SELECT * FROM rso_event WHERE (SELECT rso_eid FROM owns_event WHERE rso_name = (SELECT rso_name FROM affiliates_rso WHERE sid='".$_SESSION['id']."'))";
 	if (!empty($_POST['keywords']) && $_POST['keywords'] != ""){
 		$keywords = strval($_POST['keywords']);
 		$keywords_clause = "event_name LIKE '%".$keywords."%'";
@@ -37,16 +37,33 @@ if (isset($_POST['submit'])) {
 		$rso = boolval($_POST['rso']);
 
 	$clause_array = array($keywords_clause, $category_clause, $between_clause, $starting_clause, $ending_clause);
-	foreach($clause_array as $i=>$value){
-		if($value != ""){
-			$public_search_query .= " AND ".$value;
-			$private_search_query .= " AND ".$value;
-			$rso_search_query .= " AND ".$value;
-
-
+	if($public){
+		$inserted_clause = false;
+		foreach($clause_array as $i=>$value){
+			if(($value != "" && $i == 0) || ($value != "" && $inserted_clause==false)){
+				$public_search_query .= "WHERE ". $value;
+				$inserted_clause = true;
+			}
+			else if($value != "" && $i != 0){
+				$public_search_query .= " AND ".$value;
+			}
 		}
 	}
-	
+	if($private){
+		$inserted_clause = false;
+		foreach($clause_array as $i=>$value){
+			if($value != ""){
+				$rso_search_query .= " AND ".$value;
+			}
+		}
+	}
+	if($rso){
+		foreach($clause_array as $i=>$value){
+			if($value != ""){
+				$rso_search_query .= " AND ".$value;
+			}
+		}
+	}
 	$rso_search_query .= " ORDER BY event_date";
 	$public_search_query .= " ORDER BY event_date";
 	$private_search_query .= " ORDER BY event_date";
