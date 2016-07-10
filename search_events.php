@@ -5,7 +5,7 @@ $keywords = $category = $public = $private = $rso = $start_date = $end_date = ""
 $keywords_clause = $category_clause = $between_clause = $starting_clause = $ending_clause = "";
 if (isset($_POST['submit'])) {
 	$public_search_query = "SELECT * FROM public_event ";
-	$private_search_query = "SELECT * FROM private_event e WHERE (SELECT university FROM student WHERE sid = e.approved_by_superadmin) = (SELECT university FROM student WHERE sid='".$_SESSION['id']."')";
+	$private_search_query = "SELECT * FROM private_event e WHERE (SELECT university FROM student WHERE sid = e.approved_by_admin) = (SELECT university FROM student WHERE sid='".$_SESSION['id']."')";
 	$pattern = "^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$";
 	$rso_search_query = "SELECT * FROM rso_event WHERE (SELECT rso_eid FROM owns_event WHERE rso_name = (SELECT rso_name FROM affiliates_rso WHERE sid='".$_SESSION['id']."'))";
 	if (!empty($_POST['keywords']) && $_POST['keywords'] != ""){
