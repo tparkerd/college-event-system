@@ -8,7 +8,7 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if(!$row){
 	$url='permissions.php';
-	echo '<META HTTP-EQUIV=REFRESH CONTENT="1; '.$url.'">';
+	echo '<META HTTP-EQUIV=REFRESH CONTENT="0; '.$url.'">';
 }
 else
     echo '<title>College Events</title>';
@@ -40,7 +40,7 @@ else
                 padding: 0;
             }
             #map {
-                height: 480px;
+                height: 360px;
                 width:700px;
             }
             .controls {
@@ -182,7 +182,7 @@ else
 	</head>
 	<body>
 		<div id="wrapper">
-			
+
 			<!-- Header -->
 			<div id="header">
 				<div class="container">
@@ -204,7 +204,7 @@ else
 				</div>
 			</div>
 			<!-- /Header -->
-			
+
 			<div id="page">
 				<div class="container">
 					<div class="row">
@@ -213,12 +213,6 @@ else
 								<header>
 									<h2>Event Guidelines</h2>
 								</header>
-                                <ul style="list-style-type:circle" class="style3">
-                                    <li class="first">All fields in this form are required (RSO name is only required if you are creating an RSO event)</li class="first">
-                                    <li>Use the Google Map to set the event location by searching for it</li>
-                                    <li>Your event will not show up on our website until it has been approved by your university's superadministrator</li>
-                                    <br><br>
-                                </ul>
                                 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
                                 <div id="map"></div><br><br>
 								</p>
@@ -297,7 +291,7 @@ else
 						</div>
 					</div>
 
-				</div>	
+				</div>
 			</div>
 
 

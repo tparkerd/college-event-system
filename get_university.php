@@ -33,7 +33,8 @@ $dbh=null;
                         <p><?php print $address?></p>
                     </li>
                     <li>
-                        <p> There are <?php print $num_students?> registered students for <?php print $uni_name?>.</p>
+                        <p class="date"><a href="#">10.03.2012</a></p>
+                        <p><a href="#">Pellentesque erat erat, tincidunt in, eleifend, malesuada bibendum. Suspendisse sit amet  in eros bibendum condimentum. </a> </p>
                     </li>
                 </ul>
             </section>

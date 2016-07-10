@@ -49,17 +49,17 @@ if (isset($_POST['submit_comment'])) {
 ?>
 
 <!DOCTYPE HTML>
+<!--
+	Synchronous by TEMPLATED
+    templated.co @templatedco
+    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
 <html>
 	<head>
 		<title>College Events</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
-		<meta property="og:url"                content="http://sdickerson.ddns.net/" />
-		<meta property="og:type"               content="website" />
-		<meta property="og:title"              content="College Events" />
-		<meta property="og:description"        content="" />
-		<meta property="og:image"              content="" />
 		<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
