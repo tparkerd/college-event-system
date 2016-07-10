@@ -1,6 +1,7 @@
 <?php
 session_start();?>
 <?php
+
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 if (!empty($_POST['comment_text']))
     $text = strval($_POST['comment_text']);

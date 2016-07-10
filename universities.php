@@ -1,135 +1,11 @@
-<?php session_start();
-// TODO(timp): implement a check for listing only approved universities (may need additional relationship in DB)
-// Check if the form was posted
-if (!empty($_POST))
-{
-	// Check if a user is logged in
-	if(!isset($_SESSION['id']))
-	{
-		echo json_encode("Please log in in order to join a university.");
-		exit;
-	}
+<?php session_start();?>
 
-	// Connect to database
-	$host = 'sdickerson.ddns.net';
-	$port = '3306';
-	$db   = 'ces';
-	$user = 'root';
-	$pass = 'S#8roN*PJTMQWJ4m';
-	$charset = 'utf8';
-
-	try {
-		$pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
-		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	} catch(PDOException $e) {
-		$error_type = $e->errorInfo[0];
-	}
-
-	// If successfully connected to the database...
-	if(!isset($error_type)) {
-		// Declare the reponse
-		$response = array();
-
-		// See if the user is a super admin, if so, they can never change their university from their assigned one
-	  try {
-	    $sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
-	    $stmt = $pdo->prepare($sql);
-	    $stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-	    $stmt->execute();
-	    $result = $stmt->fetchColumn();
-	  } catch (PDOException $e) {
-	    $response['error'] = $e->errorInfo[1];
-	  }
-
-	  // If they aren't a super admin, do not allow him/her ot switch universities
-	  if ($result) {
-			$response['message'] = 'Since you are the super admin, you cannot switch universities.';
-			echo json_encode($response);
-			exit;
-		}
-
-		// Start checks
-		// Is user already affiliated with a university?
-		try {
-			$sql = "SELECT university_name FROM affiliates_university WHERE sid = :id";
-			$stmt = $pdo->prepare($sql);
-			$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-			$stmt->execute();
-			$response['university_name'] = $stmt->fetchColumn();
-		} catch (PDOException $e) {
-			$response['error'] = $e->errorInfo[1];
-		}
-
-		// If they are not assigned a university yet
-		if ($response['university_name']) {
-			// If the user already is a student of the university
-			if ($response['university_name'] == $_POST['university_name'])
-			{
-				// ERROR: Student already belongs to the university, do nothing
-				$response['message'] = "You are already a student of " . $_POST['university_name'];
-
-			// Student is switching universities
-			} else {
-				try {
-					// Update the student's university attribute
-					$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
-					$stmt = $pdo->prepare($sql);
-					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-					$stmt->execute();
-
-					// Update affiliates_university
-					$sql = "UPDATE affiliates_university SET university_name = :university_name WHERE sid = :id";
-					$stmt = $pdo->prepare($sql);
-					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-					$stmt->execute();
-				}	catch (PDOException $e) {
-					$response['error'] = $e->errorInfo[1];
-				}
-				$response['message'] = "You have successfully switched to " . $_POST['university_name'];
-
-			}
-		} else {
-			// Otherwise, the student does not have a university set.
-			// Therefore, assign them to the university of their liking
-			// UPDATE student & INSERT affiliates_university
-			try {
-				// Update the student's university attribute
-				$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
-				$stmt = $pdo->prepare($sql);
-				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-				$stmt->execute();
-
-				// Affiliate the user with the university to increase student count
-				$sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
-				$stmt = $pdo->prepare($sql);
-				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-				$stmt->execute();
-
-				$response['message'] = "You have successfully joined " . $_POST['university_name'];
-			} catch (PDOException $e) {
-				// Get the error code
-				$response['error'] = $e->errorInfo[1];
-			}
-		}
-
-		// Return the message to the AJAX call
-		echo json_encode($response);
-		exit;
-	}
-}
-
-?>
 
 <html>
 <head>
 	<title>College Events</title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta name="description" content="" />
-	<meta name="keywords" content="" />
+	<link rel="stylesheet" href="css/style.css" />
 	<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 	<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -137,59 +13,9 @@ if (!empty($_POST))
 	<script src="js/skel.min.js"></script>
 	<script src="js/skel-panels.min.js"></script>
 	<script src="js/init.js"></script>
-	<noscript>
-		<link rel="stylesheet" href="css/skel-noscript.css" />
-		<link rel="stylesheet" href="css/style.css" />
-	</noscript>
 	<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 	<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
-	<script type="text/javascript">
-		function getUniversityProfile(name) {
-			if (name == "") {
-				name='University of Central Florida';
-			}
-			if (window.XMLHttpRequest) {
-				// code for IE7+, Firefox, Chrome, Opera, Safari
-				xmlhttp = new XMLHttpRequest();
-			} else {
-				// code for IE6, IE5
-				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			xmlhttp.onreadystatechange = function () {
-				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
-				}
-			};
-			xmlhttp.open("GET", "get_university.php?q="+name,true);
-			xmlhttp.send();
-		}
 
-		// AJAX call to same page to join university
-		$(function() {
-			$('#form_join_university').submit(function(event) {
-				var formData = {
-					'university_name' : $('select[name=university_name]').val()
-				}
-				$.ajax({
-					type			: 'POST',
-					url				: '',
-					data			: formData,
-					dataType	: 'json',
-					encode		: true
-				})
-					.done(function(data) {
-							console.log(data)
-							$('#form_join_university').parent().html(data.message)
-
-					})
-					.fail(function(data) {
-						console.log(data)
-					})
-					event.preventDefault()
-			})
-		})
-
-	</script>
 </head>
 <body>
 
@@ -312,5 +138,177 @@ if (!empty($_POST))
 	</div>
 
 </div>
+<script type="text/javascript">
+	function getUniversityProfile(name) {
+		if (name == "") {
+			name='University of Central Florida';
+		}
+		if (window.XMLHttpRequest) {
+			// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange = function () {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
+			}
+		};
+		xmlhttp.open("GET", "get_university.php?q="+name,true);
+		xmlhttp.send();
+	}
+
+	// AJAX call to same page to join university
+	$(function() {
+		$('#form_join_university').submit(function(event) {
+			var formData = {
+				'university_name' : $('select[name=university_name]').val()
+			}
+			$.ajax({
+				type			: 'POST',
+				url				: '',
+				data			: formData,
+				dataType	: 'json',
+				encode		: true
+			})
+				.done(function(data) {
+					console.log(data)
+					$('#form_join_university').parent().html(data.message)
+
+				})
+				.fail(function(data) {
+					console.log(data)
+				})
+			event.preventDefault()
+		})
+	})
+
+</script>
+<?php if (!empty($_POST))
+	// TODO(timp): implement a check for listing only approved universities (may need additional relationship in DB)
+// Check if the form was posted
+{
+	// Check if a user is logged in
+	if(!isset($_SESSION['id']))
+	{
+		echo json_encode("Please log in in order to join a university.");
+		exit;
+	}
+
+	// Connect to database
+	$host = 'sdickerson.ddns.net';
+	$port = '3306';
+	$db   = 'ces';
+	$user = 'root';
+	$pass = 'S#8roN*PJTMQWJ4m';
+	$charset = 'utf8';
+
+	try {
+		$pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	} catch(PDOException $e) {
+		$error_type = $e->errorInfo[0];
+	}
+
+	// If successfully connected to the database...
+	if(!isset($error_type)) {
+		// Declare the reponse
+		$response = array();
+
+		// See if the user is a super admin, if so, they can never change their university from their assigned one
+		try {
+			$sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+			$stmt->execute();
+			$result = $stmt->fetchColumn();
+		} catch (PDOException $e) {
+			$response['error'] = $e->errorInfo[1];
+		}
+
+		// If they aren't a super admin, do not allow him/her ot switch universities
+		if ($result) {
+			$response['message'] = 'Since you are the super admin, you cannot switch universities.';
+			echo json_encode($response);
+			exit;
+		}
+
+		// Start checks
+		// Is user already affiliated with a university?
+		try {
+			$sql = "SELECT university_name FROM affiliates_university WHERE sid = :id";
+			$stmt = $pdo->prepare($sql);
+			$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+			$stmt->execute();
+			$response['university_name'] = $stmt->fetchColumn();
+		} catch (PDOException $e) {
+			$response['error'] = $e->errorInfo[1];
+		}
+
+		// If they are not assigned a university yet
+		if ($response['university_name']) {
+			// If the user already is a student of the university
+			if ($response['university_name'] == $_POST['university_name'])
+			{
+				// ERROR: Student already belongs to the university, do nothing
+				$response['message'] = "You are already a student of " . $_POST['university_name'];
+
+				// Student is switching universities
+			} else {
+				try {
+					// Update the student's university attribute
+					$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+					$stmt->execute();
+
+					// Update affiliates_university
+					$sql = "UPDATE affiliates_university SET university_name = :university_name WHERE sid = :id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+					$stmt->execute();
+				}	catch (PDOException $e) {
+					$response['error'] = $e->errorInfo[1];
+				}
+				$response['message'] = "You have successfully switched to " . $_POST['university_name'];
+
+			}
+		} else {
+			// Otherwise, the student does not have a university set.
+			// Therefore, assign them to the university of their liking
+			// UPDATE student & INSERT affiliates_university
+			try {
+				// Update the student's university attribute
+				$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+				$stmt->execute();
+
+				// Affiliate the user with the university to increase student count
+				$sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+				$stmt->execute();
+
+				$response['message'] = "You have successfully joined " . $_POST['university_name'];
+			} catch (PDOException $e) {
+				// Get the error code
+				$response['error'] = $e->errorInfo[1];
+			}
+		}
+
+		// Return the message to the AJAX call
+		echo json_encode($response);
+		exit;
+	}
+}
+
+?>
+
 </body>
 </html>
