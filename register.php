@@ -1,7 +1,6 @@
 <?php session_start();
-?>
 // TODO(timp): Implement check if student id was already used
-<?php	$error = array();
+	$error = array();
   if (!empty($_POST)) {
     // Connect to database
     $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
