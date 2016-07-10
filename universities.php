@@ -123,13 +123,6 @@ if (!empty($_POST))
 }
 
 ?>
-<!DOCTYPE HTML>
-<!--
-	Synchronous by TEMPLATED
-    templated.co @templatedco
-    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
-
 
 <html>
 <head>
@@ -257,8 +250,7 @@ if (!empty($_POST))
 													<p><?php print $address?></p>
 												</li>
 												<li>
-													<p class="date"><a href="#">10.03.2012</a></p>
-													<p><a href="#">Pellentesque erat erat, tincidunt in, eleifend, malesuada bibendum. Suspendisse sit amet  in eros bibendum condimentum. </a> </p>
+													<p> There are <?php print $num_students?> registered students for <?php print $uni_name?>.</p>
 												</li>
 											</ul>
 										</section>

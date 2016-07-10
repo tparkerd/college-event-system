@@ -1,22 +1,14 @@
 <?php session_start();?>
 <!DOCTYPE HTML>
-<!--
-	Synchronous by TEMPLATED
-    templated.co @templatedco
-    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
 <html>
 <head>
 	<title>College Events</title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta name="description" content="" />
-	<meta name="keywords" content="" />
 	<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 	<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 	<script src="js/skel.min.js"></script>
-	<script src="js/skel-panels.min.js"></script>
 	<script src="js/init.js"></script>
 	<noscript>
 		<link rel="stylesheet" href="css/skel-noscript.css" />
@@ -61,23 +53,23 @@
 						</header>
 
 						<ul class="style3">
-								<?php
-									$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-									$sql="SELECT * FROM public_event WHERE event_date >= DATE(NOW()) LIMIT 3";
-									$sth=$dbh->prepare($sql);
-									$sth->execute();
-									while($row = $sth->fetch(PDO::FETCH_ASSOC))
-									{
-										echo "<li>";
-										echo "<p class=\"date\"><a href=\"#\"><b>";
-										print $row['event_date']. "\t";
-										echo "</b></a></p>";
-										echo '<p><a href="event_profile.php?eid='.$row['eid'].'">';
-										print $row['event_name'] . "\t";
-										echo "</a>";
-										echo "</p></li>";
-									}
-									?>
+							<?php
+							$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+							$sql="SELECT * FROM public_event WHERE event_date >= DATE(NOW()) ORDER BY event_date LIMIT 3";
+							$sth=$dbh->prepare($sql);
+							$sth->execute();
+							while($row = $sth->fetch(PDO::FETCH_ASSOC))
+							{
+								echo "<li>";
+								echo "<p class=\"date\"><a href=\"#\"><b>";
+								print $row['event_date']. "\t";
+								echo "</b></a></p>";
+								echo '<p><a href="event_profile.php?eid='.$row['eid'].'">';
+								print $row['event_name'] . "\t";
+								echo "</a>";
+								echo "</p></li>";
+							}
+							?>
 						</ul>
 					</section>
 				</div>
@@ -86,8 +78,12 @@
 						<header>
 							<h2>Find what excites you</h2>
 						</header>
-						<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit.</p>
-						<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia.<br>
+						<p> Make the most of your college experience by never missing an event! Our website allows you to create events and student organizations,
+							as well as search through events and organizations to find things that match your interests. If you do not register, you will only be able to
+							see public university events, but fear not -- as soon as you register with a university, you gain access to all of that university's events.
+						</p>
+						<p>
+							Join a Registered Student Organization to see even more events, or request to create your own to gain access to creating events.
 						</p>
 					</section>
 				</div>
@@ -98,7 +94,7 @@
 						</header>
 						<?php if(isset($_SESSION['id']) && $_SESSION['id'] != '') { echo $_SESSION['id'] . ' is logged in.<br><br>';  echo '<form action="session_stop.php" class="pure-form" method="post"> <button type="submit" value="Log out" class="small-button">Log out </button>';} else {
 
-						echo <<<EOD
+							echo <<<EOD
 
 						<form action="session_start.php" method="post" class="pure-form" method="post">
 							<fieldset>
@@ -113,7 +109,7 @@
 							</fieldset>
 						</form>
 EOD;
-					} ?>
+						} ?>
 
 					</section>
 
@@ -136,5 +132,6 @@ EOD;
 	</div>
 
 </div>
+
 </body>
 </html>

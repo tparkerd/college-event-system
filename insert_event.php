@@ -224,19 +224,19 @@ else{
                 <div class="9u skel-cell-important">
                     <section id="content">
 
-                            <br><br>
-                            <?php
-                                if($error != ''){
-                                    echo "<header><h2>Create Event Request Failed</h2></header><p>";
-                                    print $error;
-                                    echo "<br><br><a href='create_event.php' style='color:black;'>Click here to go back to event creation page</a></p>";
-                                }
-                                else{
-                                    echo "<header><h2>Request Successfully Submitted!</h2></header><p>";
-                                    print "Your request to create this event has been submitted. It must be approved before appearing on the website.";
-                                    echo "</p>";
-                                }?>
-                            <br>
+                        <br><br>
+                        <?php
+                        if($error != ''){
+                            echo "<header><h2>Create Event Request Failed</h2></header><p>";
+                            print $error;
+                            echo "<br><br><a href='create_event.php' style='color:black;'>Click here to go back to event creation page</a></p>";
+                        }
+                        else{
+                            echo "<header><h2>Request Successfully Submitted!</h2></header><p>";
+                            print "Your request to create this event has been submitted. It must be approved before appearing on the website.";
+                            echo "</p>";
+                        }?>
+                        <br>
 
                         </p>
                     </section>

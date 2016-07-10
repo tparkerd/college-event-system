@@ -1,14 +1,8 @@
-<!--
-	Synchronous by TEMPLATED
-    templated.co @templatedco
-    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
+<?php session_start();?>
 <html>
 <head>
     <title>College Events</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
     <!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -57,10 +51,10 @@
                             <h2 class="centered">Find Things that Interest You</h2>
                         </header>
                         <form class="centered" action="search_events.php">
-                        <button type="submit" class="button-large">Search Events</button><br><br>
+                            <button type="submit" class="button-large">Search Events</button><br><br>
                         </form>
                         <form class="centered" action="search_rso.php">
-                        <button type="submit" class="button-large">Search Student Organizations</button><br><br>
+                            <button type="submit" class="button-large">Search Student Organizations</button><br><br>
                         </form>
                     </section>
                 </div>
