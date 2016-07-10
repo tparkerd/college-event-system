@@ -1,9 +1,19 @@
+<?php session_start()?>
+<?php
+$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+$sql ="SELECT * FROM admin WHERE admin_id='".$_SESSION['id']."'";
+$stmt = $dbh->prepare($sql);
+$stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if(!$row){
+	$url='permissions.php';
+	echo '<META HTTP-EQUIV=REFRESH CONTENT="1; '.$url.'">';
+}
+else
+	echo '<title>College Events</title>';
+?>
 <!DOCTYPE HTML>
-<!--
-	Synchronous by TEMPLATED
-    templated.co @templatedco
-    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
 <html>
 	<head>
 		<title>College Events</title>
@@ -57,10 +67,15 @@
 								<header>
 									<h2>Student Organization Guidelines</h2>
 								</header>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
-								</p>
-								<p>Aliquam erat volutpat. Pellentesque tristique ante ut risus. Quisque dictum. Integer nisl risus, sagittis convallis, rutrum id, elementum congue, nibh. Suspendisse dictum porta lectus. Donec placerat odio vel elit. Nullam ante orci, pellentesque eget, tempus quis, ultrices in, est. Curabitur sit amet nulla. Nam in massa. Sed vel tellus. Curabitur sem urna, consequat vel, suscipit in, mattis placerat, nulla. Sed ac leo. Donec leo. Vivamus fermentum nibh in augue. Nulla enim eros, porttitor eu, tempus id, varius non, nibh. Duis enim nulla, luctus eu, dapibus lacinia, venenatis id, quam. Vestibulum imperdiet, magna nec eleifend rutrum, nunc lectus vestibulum velit, euismod lacinia quam nisl id lorem. Quisque erat. Vestibulum pellentesque, justo mollis pretium suscipit, justo nulla blandit libero, in blandit augue justo quis nisl. Fusce mattis viverra elit. Fusce quis tortor.<br>
+								<p>
+								<ul style="list-style-type:circle" class="style3">
+									<li class="first">All fields in this form are required.</li class="first">
+									<li>Member e-mail addresses must all end in the same domain (your university's domain is preferred).</li>
+									<li>Your Registered Student Organization must be approved by your university's super administrator before you can create events for it.</li>
+									<li>Whoever requests to create the organization will become the group's administrator. Make sure you are okay with being responsible for member approval requests before signing up as the administrator.</li>
+									<li>Provide a good description so other students will know if your group is something they would be interested in!</li>
+									<br><br>
+								</ul>
 								</p>
 							</section>
 						</div>
@@ -76,10 +91,17 @@
 											<input type="text" name="rso_name" placeholder="Organization Name">
 											<br><br>
 											<select style="width:190px" name="euniversity" placeholder="University">
+												<?php
+												$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+												$sql ="SELECT university from student WHERE sid='".$_SESSION['id']."'";
+												$stmt = $dbh->prepare($sql);
+												$stmt->execute();
+												$unames=$stmt->fetchAll();
+												?>
 												<option value="" disabled selected>University</option>
-												<option value="ucf">University of Central Florida</option>
-												<option value="fsu">Florida State University</option>
-												<option value="uf">University of Florida</option>
+												<?php foreach($unames as $uname):?>
+													<option value="<?php print $uname['university']?>"><?php print $uname['university']; ?></option>
+												<?php endforeach; ?>
 											</select>
 											<br><br>
 											<input type="email" name="mem1_email" placeholder="Member E-mail"><br><br>

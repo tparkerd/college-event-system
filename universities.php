@@ -30,24 +30,6 @@ if (!empty($_POST))
 		// Declare the reponse
 		$response = array();
 
-		// See if the user is a super admin, if so, they can never change their university from their assigned one
-	  try {
-	    $sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
-	    $stmt = $pdo->prepare($sql);
-	    $stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-	    $stmt->execute();
-	    $result = $stmt->fetchColumn();
-	  } catch (PDOException $e) {
-	    $response['error'] = $e->errorInfo[1];
-	  }
-
-	  // If they aren't a super admin, do not allow him/her ot switch universities
-	  if ($result) {
-			$response['message'] = 'Since you are the super admin, you cannot switch universities.';
-			echo json_encode($response);
-			exit;
-		}
-
 		// Start checks
 		// Is user already affiliated with a university?
 		try {
@@ -124,13 +106,6 @@ if (!empty($_POST))
 
 ?>
 <!DOCTYPE HTML>
-<!--
-	Synchronous by TEMPLATED
-    templated.co @templatedco
-    Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
--->
-
-
 <html>
 <head>
 	<title>College Events</title>
@@ -257,8 +232,7 @@ if (!empty($_POST))
 													<p><?php print $address?></p>
 												</li>
 												<li>
-													<p class="date"><a href="#">10.03.2012</a></p>
-													<p><a href="#">Pellentesque erat erat, tincidunt in, eleifend, malesuada bibendum. Suspendisse sit amet  in eros bibendum condimentum. </a> </p>
+													<p> There are <?php print $num_students?> registered students for <?php print $uni_name?>.</p>
 												</li>
 											</ul>
 										</section>
