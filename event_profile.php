@@ -51,12 +51,15 @@ if (isset($_POST['submit_comment'])) {
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title><?php print $event_name?></title>
+		<title>College Events</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
 		<meta property="og:url"                content="http://sdickerson.ddns.net/" />
 		<meta property="og:type"               content="website" />
-		<meta property="og:title"              content="<?php print $event_name?>" />
-		<meta property="og:description"        content="<?php print $event_desc?>" />
+		<meta property="og:title"              content="College Events" />
+		<meta property="og:description"        content="" />
+		<meta property="og:image"              content="" />
 		<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 		<!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -92,7 +95,7 @@ if (isset($_POST['submit_comment'])) {
 						dataType: 'json',
 						success: function(data)
 						{
-							location.reload(true);
+							// etc...
 						}
 					});
 				}
@@ -101,12 +104,12 @@ if (isset($_POST['submit_comment'])) {
 	<body>
 	<div id="fb-root"></div>
 	<script>(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) return;
-			js = d.createElement(s); js.id = id;
-			js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
-			fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));</script>
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
 
 		<div id="wrapper">
 			
@@ -147,7 +150,7 @@ if (isset($_POST['submit_comment'])) {
 								<br> Phone: <?php print $contact_phone;?></p>
 								<p><?php print $event_desc;?></p>
 								<br>
-								<div class="fb-share-button" data-href="http://sdickerson.ddns.net/event_profile.php?eid=<?php print $event_id?>" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A63342%2Fcollege-event-website%2Fevent_profile.html%3F_ijt%3Duaupj23v5ohnmh2o24o8e9g2dr&amp;src=sdkpreparse">Share</a></div>
+								<div class="fb-share-button" data-href="http://localhost:63342/college-event-website/event_profile.html?_ijt=uaupj23v5ohnmh2o24o8e9g2dr" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A63342%2Fcollege-event-website%2Fevent_profile.html%3F_ijt%3Duaupj23v5ohnmh2o24o8e9g2dr&amp;src=sdkpreparse">Share</a></div>
 								<br><br>
 								<a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out this event:" data-size="large">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 								</section>
@@ -217,7 +220,7 @@ if (isset($_POST['submit_comment'])) {
 											echo '<div style="float:right">';
 											if($row['sid'] == $_SESSION['id']){
 												echo '<button style="font-size:smaller;display:inline-block;" class="smallest-button" onclick="editComment()" type="button" id="edit_comment" name="edit_comment">Edit</button>';
-												echo '<button style="margin-left:20px;font-size:smaller;display:inline-block;" class="smallest-button" onclick="deleteComment();window.location.href=window.location.href" type="button" id="delete_comment" name="delete_comment">Delete</button>';
+												echo '<button style="margin-left:20px;font-size:smaller;display:inline-block;" class="smallest-button" onclick="deleteComment()" type="button" id="delete_comment" name="delete_comment">Delete</button>';
 											}
 											echo '</div></li></p>';
 										}
