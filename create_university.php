@@ -16,6 +16,7 @@ $db   = 'ces';
 $user = 'root';
 $pass = 'S#8roN*PJTMQWJ4m';
 $charset = 'utf8';
+
 try {
 	$pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
