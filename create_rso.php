@@ -1,17 +1,7 @@
 <?php session_start()?>
 <?php
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-$sql ="SELECT * FROM admin WHERE admin_id='".$_SESSION['id']."'";
-$stmt = $dbh->prepare($sql);
-$stmt->execute();
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if(!$row){
-	$url='permissions.php';
-	echo '<META HTTP-EQUIV=REFRESH CONTENT="1; '.$url.'">';
-}
-else
-	echo '<title>College Events</title>';
+echo '<title>College Events</title>';
 
 $rso_error = $name_taken_error = $email_error = $email_error2 = $university_error = $description_error = "";
 
