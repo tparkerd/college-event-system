@@ -9,6 +9,8 @@ $q = strval($_GET['q']);
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 $sql="SELECT * FROM university WHERE university_name='".$q."'";
 $sth=$dbh->prepare($sql);
+// $sql="SELECT * FROM university WHERE university_name = :name AND university_name IN (SELECT university_name FROM university_approved_by)";
+// $sth->bindParam(':name', $q, PDO::PARAM_STR);
 foreach ($dbh->query($sql) as $row) {
     $uni_name = $row['university_name'];
     $address= $row['address'];
