@@ -10,38 +10,38 @@ if(!isset($_SESSION['id']))
   echo '<META HTTP-EQUIV=REFRESH CONTENT="0; '.$url.'">';
 }
 
+// Connect to database
+$host = 'sdickerson.ddns.net';
+$port = '3306';
+$db   = 'ces';
+$user = 'root';
+$pass = 'S#8roN*PJTMQWJ4m';
+$charset = 'utf8';
+
+try {
+  $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+  $response['error'] = $e->getMessage();
+}
+
+// Make sure that the user is a super admin (maybe move this and the database connection before the check for !empty($_POST))
+try {
+  $sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
+  $stmt = $pdo->prepare($sql);
+  $stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+  $stmt->execute();
+  $result = $stmt->fetchColumn();
+} catch (PDOException $e) {
+  $response['error'] = $e->getMessage();
+}
+
+// If they aren't a super admin, kick them out (this caused problems before, so this may need to be watched)
+if (!$result)
+  echo '<META HTTP-EQUIV=REFRESH CONTENT="0; permissions.php">';
+
 // Check if an AJAX call was posted, post will not be empty
 if(!empty($_POST)) {
-  // Connect to database
-  $host = 'sdickerson.ddns.net';
-  $port = '3306';
-  $db   = 'ces';
-  $user = 'root';
-  $pass = 'S#8roN*PJTMQWJ4m';
-  $charset = 'utf8';
-
-  try {
-    $pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  } catch(PDOException $e) {
-    $response['error'] = $e->getMessage();
-  }
-
-// Make sure that the user is a super admin
-  try {
-    $sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-    $stmt->execute();
-    $result = $stmt->fetchColumn();
-  } catch (PDOException $e) {
-    $response['error'] = $e->getMessage()[1];
-  }
-
-  // If they aren't a super admin, kick them out (this caused problems before, so this may need to be watched)
-  if (!$result)
-    echo '<META HTTP-EQUIV=REFRESH CONTENT="0; permissions.php">';
-
   // Is this a call to approve or reject an event?
   if(isset($_POST['action'])) {
 
@@ -279,7 +279,7 @@ if(!empty($_POST)) {
     $stmt->execute();
     $response['events'] = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
   } catch (PDOException $e) {
-    $response['error'] = $e->getMessage()[1];
+    $response['error'] = $e->getMessage();
   }
 
   // Get a list of all RSOs associated with the university
@@ -295,7 +295,7 @@ if(!empty($_POST)) {
     $stmt->execute();
     $response['rsos'] = json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
   } catch (PDOException $e) {
-    $response['error'] = $e->getMessage()[1];
+    $response['error'] = $e->getMessage();
   }
 
   echo json_encode($response);
@@ -566,8 +566,8 @@ if(!empty($_POST)) {
       table tr td:first-child {
         padding-left: 1rem;
       }
-      table tr td {
-        text-overflow: ellipsis;
+      table tbody tr:nth-child(even) {
+        background: rgb(240, 240, 240);
       }
       .approval, .rejection {
         padding: 5px;
