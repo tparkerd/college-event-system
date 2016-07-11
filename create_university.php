@@ -1,8 +1,8 @@
 <?php
 session_start();?>
+<?php
 // Check if a user is not logged in
 // If so, redirect them to the permissions page
-<?php
 if(!isset($_SESSION['id']))
 {
 	$url='permissions.php';
@@ -16,14 +16,16 @@ $db   = 'ces';
 $user = 'root';
 $pass = 'S#8roN*PJTMQWJ4m';
 $charset = 'utf8';
-
 try {
 	$pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
 	$error_type = $e->errorInfo[0];
 }
-if(count($_POST) > 0) {
+if(!empty($_POST)) {
+	$response = array();
+	$response['Form data'] = $_POST;
+
 	// If the form was submitted (posted) and the connection was successful
 	// and if the form was submitted
 	// attempt to create a new university
@@ -33,17 +35,26 @@ if(count($_POST) > 0) {
 			$sql = "INSERT INTO university(university_name, address, description, picture_one, picture_two)
 			VALUES(:name, :address, :description, :picture_one, :picture_two)";
 			$stmt = $pdo->prepare($sql);
-			$stmt->bindParam(':name', $_POST["university_name"], PDO::PARAM_STR);
-			$stmt->bindParam(':address', $_POST["university_address"], PDO::PARAM_STR);
-			$stmt->bindParam(':description', $_POST["university_desc"], PDO::PARAM_STR);
-			$stmt->bindParam(':picture_one', $_POST["image1"], PDO::PARAM_STR);
-			$stmt->bindParam(':picture_two', $_POST["image2"], PDO::PARAM_STR);
+			$stmt->bindParam(':name', $_POST["name"], PDO::PARAM_STR);
+			$stmt->bindParam(':address', $_POST["address"], PDO::PARAM_STR);
+			$stmt->bindParam(':description', $_POST["description"], PDO::PARAM_STR);
+			$stmt->bindParam(':picture_one', $_POST["picture_one"], PDO::PARAM_STR);
+			$stmt->bindParam(':picture_two', $_POST["picture_two"], PDO::PARAM_STR);
+			$stmt->execute();
+
+			// Establish the user as the prospective superadmin
+			$sql = "INSERT INTO creates_university(university_name, superadmin_id) VALUES(:name, :superadmin_id)";
+			$stmt = $pdo->prepare($sql);
+			$stmt->bindParam(':name', $_POST['name'], PDO::PARAM_STR);
+			$stmt->bindParam(':superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
 			$stmt->execute();
 		} catch (PDOException $e) {
 			// Get the error code
-			$error_type = $e->errorInfo[1];
+			$response['error'] = json_encode($e);
 		}
 	}
+	echo json_encode($response);
+	exit;
 }
 ?>
 <!DOCTYPE HTML>
@@ -64,6 +75,40 @@ if(count($_POST) > 0) {
 		<link rel="stylesheet" href="css/skel-noscript.css" />
 		<link rel="stylesheet" href="css/style.css" />
 	</noscript>
+	<script type="text/javascript">
+	$(function() {
+		// Whenever a univerity is created...
+		$('#creates_university').submit(function(e) {
+			e.preventDefault();
+
+			formData = {
+				name 					: $('input[name=university_name]').val(),
+				address 			: $('input[name=university_address]').val(),
+				description 	: $('textarea[name=university_desc]').val(),
+				picture_one		: $('input[name=image1]').val(),
+				picture_two		: $('input[name=image2]').val()
+			}
+
+			$.ajax({
+				type			: 'POST',
+				url				: '',
+				data      : formData,
+				dataType	: 'json',
+				encode		: true
+			})
+			.done(function(data) {
+				// TODO(timp): Replace the sidebar with a response if the request was successfully submitted
+				$(e.target).parent().parent().remove();
+				console.log(data)
+			})
+			.fail(function(data) {
+				// alert the user that it failed
+				console.log('Failed ajax')
+				console.log(data)
+			})
+		})
+	})
+	</script>
 	<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 	<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
 </head>
@@ -112,7 +157,7 @@ if(count($_POST) > 0) {
 EOD;
 
 						// Start the checks for content section
-						if (count($_POST)) {
+						if (!empty($_POST)) {
 							if (!isset($error_type)) {
 								echo 'Your request to create <em>' . $_POST['university_name'] . '</em> has been accepted. Please wait for approval.<br>';
 							} else {
@@ -139,13 +184,11 @@ EOD;
 				</div>
 				<div class="3u">
 					<section id="sidebar2">
-						<?php
-						$default_content_sidebar = <<<EOD
 									<header style="text-align:center;">
 										<h2 class="centered">Create University Profile</h2>
 									</header>
 
-								<form action="" method="POST" class="pure-form centered">
+								<form id="creates_university" class="pure-form centered">
 									<fieldset>
 										<legend>Request to create a profile for your university</legend>
 										<input type="text" name="university_name" placeholder="University Name" required>
@@ -154,15 +197,9 @@ EOD;
 										<input type="text" name="image1" placeholder="Image URL"><br><br>
 										<input type="text" name="image2" placeholder="Image URL"><br><br>
 										<textarea rows="8" required placeholder="Enter your university description here." name="university_desc"></textarea><br><br>
-										<button type="submit" class="small-button">Submit</button>
+										<input type="submit" class="small-button" value="Submit" />
 									</fieldset>
 								</form>
-EOD;
-						// If nothing has been posted, display the form
-						if (count($_POST) == 0) {
-							echo $default_content_sidebar;
-						}
-						?>
 					</section>
 				</div>
 			</div>
