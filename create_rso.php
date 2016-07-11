@@ -37,7 +37,7 @@ if (isset($_POST['submit'])) {
 			$email_error2 = "All emails must have the same domain name";
 		}
 	}
-	if (!empty($_POST['rso_university'])) {
+	if (!empty($_POST['description'])) {
 		$description = strval($_POST['description']);
 	}else{
 		$description_error = "Description is required";
@@ -209,7 +209,7 @@ if (isset($_POST['submit'])) {
 								<input style="width:80%;" type="email" name="mem5_email" placeholder="Member E-mail"><br><br>
 								<?php if($email_error != "") echo '<div>'.$email_error.'</div><br>';?>
 								<?php if($email_error2 != "") echo '<div>'.$email_error2.'</div><br>';?>
-								<textarea style="width:80%;" rows="8" placeholder="Enter your organization description here." name="event_description"></textarea><br><br>
+								<textarea style="width:80%;" rows="8" placeholder="Enter your organization description here." name="description"></textarea><br><br>
 								<?php if($description_error != "") echo '<div>'.$description_error.'</div><br>';?>
 								<button type="submit" name="submit" id="submit" class="small-button">Submit</button>
 							</fieldset>
