@@ -122,11 +122,18 @@ if(!empty($_POST)) {
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
             $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
-            $response = $stmt->execute();
+            $stmt->execute();
+            $response['Inserting into RSO_approved_by'] = $stmt->fetchColumn();
+
+            // Make the user an admin
+            $sql = "INSERT INTO admin(admin_id, given_name, family_name, email, pword) SELECT sid, given_name, family_name, email, pword FROM student WHERE sid = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam('id', $_SESSION['id'], PDO::PARAM_STR);
+            $stmt->execute();
+            $response['Inserting into admin'] = $stmt->fetchColumn();
           } catch (PDOException $e) {
             $response = $e->getMessage();
           }
-
 
           echo json_encode($response);
           exit;
@@ -193,8 +200,22 @@ if(!empty($_POST)) {
             $stmt->bindParam('rso_name', $_POST['rso_name'], PDO::PARAM_STR);
             $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
             $response = $stmt->execute();
+
+            // Get the ID of the user who created the RSO
+            $sql = "SELECT sid FROM creates_rso WHERE rso_name = :rso_name";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
+            $stmt->execute();
+            // $response['id'] = $stmt->fetchColumn();
+
+            // Affiliate the student with the RSO
+      			$sql = "INSERT INTO affiliates_rso(sid, rso_name) VALUES (:sid, :rso_name)";
+      			$affiliates_rso_stmt = $pdo->prepare($sql);
+      			$affiliates_rso_stmt->bindParam(':sid', $id, PDO::PARAM_STR);
+      			$affiliates_rso_stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
+      			$affiliates_rso_stmt->execute();
           } catch (PDOException $e) {
-            $response['error'] = $e->getMessage();
+            // $response['error'] = $e->getMessage();
           }
           echo json_encode($response);
           exit;

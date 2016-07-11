@@ -59,12 +59,6 @@ if (isset($_POST['submit'])) {
 			$insert_rso_stmt->bindParam(':rso_name', $rso_name, PDO::PARAM_STR, 80);
 			$insert_rso_stmt->execute() or die(print_r($insert_rso_stmt->errorInfo(), true));
 
-			$affiliates_rso_sql = "INSERT INTO affiliates_rso(sid, rso_name) VALUES (:sid, :rso_name)";
-			$affiliates_rso_stmt = $dbh->prepare($affiliates_rso_sql);
-			$affiliates_rso_stmt->bindParam(':sid', $admin_id, PDO::PARAM_STR, 80);
-			$affiliates_rso_stmt->bindParam(':rso_name', $rso_name, PDO::PARAM_STR, 255);
-			$affiliates_rso_stmt->execute() or die(print_r($affiliates_rso_stmt->errorInfo(), true));
-
 			$belongs_to_university_sql = "INSERT INTO belongs_to_university(rso_name, university_name) VALUES (:rso_name, :university_name)";
 			$belongs_to_university_stmt = $dbh->prepare($belongs_to_university_sql);
 			$belongs_to_university_stmt->bindParam(':rso_name', $rso_name, PDO::PARAM_STR, 80);
