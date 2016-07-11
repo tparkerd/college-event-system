@@ -52,7 +52,7 @@ if (isset($_POST['submit_comment'])) {
 <html>
 <head>
 	<title><?php print $event_name?></title>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />w
 	<meta property="og:url"                content="http://sdickerson.ddns.net/" />
 	<meta property="og:type"               content="website" />
 	<meta property="og:title"              content="<?php print $event_name?>" />
@@ -126,6 +126,16 @@ if (isset($_POST['submit_comment'])) {
 					<li class="active"><a href="create.php">Create</a></li>
 					<li><a href="search.php">Search</a></li>
 					<li><a href="universities.php">Universities</a></li>
+					<?php
+					$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+					$superadmin_sql = "SELECT * FROM superadmin WHERE superadmin_id ='".$_SESSION['id']."'";
+					$prep_sql = $dbh->prepare($superadmin_sql);
+					$prep_sql->execute();
+					$result = $prep_sql->fetch();
+					if($result){
+						echo '<li><a href="superadmin_dashboard.php">Dashboard</a></li>';
+					}
+					?>
 				</ul>
 			</nav>
 		</div>

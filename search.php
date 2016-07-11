@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <script src="js/skel.min.js"></script>
-    <script src="js/skel-panels.min.js"></script>
     <script src="js/init.js"></script>
     <!--[if lte IE 8]><script src="js/html5shiv.js"></script><![endif]-->
     <!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
@@ -34,6 +33,16 @@
                     <li><a href="create.php">Create</a></li>
                     <li class="active"><a href="search.php">Search</a></li>
                     <li><a href="universities.php">Universities</a></li>
+                    <?php
+                    $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+                    $superadmin_sql = "SELECT * FROM superadmin WHERE superadmin_id ='".$_SESSION['id']."'";
+                    $prep_sql = $dbh->prepare($superadmin_sql);
+                    $prep_sql->execute();
+                    $result = $prep_sql->fetch();
+                    if($result){
+                        echo '<li><a href="superadmin_dashboard.php">Dashboard</a></li>';
+                    }
+                    ?>
                 </ul>
             </nav>
         </div>
