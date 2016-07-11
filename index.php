@@ -45,6 +45,13 @@
 					if($result){
 						echo '<li><a href="superadmin_dashboard.php">Dashboard</a></li>';
 					}
+					$webmaster_sql = "SELECT * FROM webmaster WHERE wid ='".$_SESSION['id']."'";
+					$prep_webmaster_sql = $dbh->prepare($webmaster_sql);
+					$prep_webmaster_sql->execute();
+					$result2 = $prep_webmaster_sql->fetch();
+					if($result2){
+						echo '<li><a href="webmaster_dashboard.php">Webmaster Dashboard</a></li>';
+					}
 					?>
 				</ul>
 			</nav>
@@ -98,13 +105,21 @@
 				</div>
 				<div class="3u">
 					<section id="sidebar2">
+						<?php
+							if(isset($_SESSION['id']) && $_SESSION['id'] != '') {
+								$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+								$sql="SELECT given_name FROM student WHERE sid='".$_SESSION['id']."'";
+								$sth=$dbh->prepare($sql);
+								$sth->execute();
+								$name = $sth->fetchColumn(0);
+								echo '<header><h2> Welcome, '.$name.'!</h2></header>';
+								echo '<form action="session_stop.php" class="pure-form" method="post"> <button type="submit" value="Log out" class="small-button">Log out </button>';}
+								else {
+
+							echo <<<EOD
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<?php if(isset($_SESSION['id']) && $_SESSION['id'] != '') { echo $_SESSION['id'] . ' is logged in.<br><br>';  echo '<form action="session_stop.php" class="pure-form" method="post"> <button type="submit" value="Log out" class="small-button">Log out </button>';} else {
-
-							echo <<<EOD
-
 						<form action="session_start.php" method="post" class="pure-form" method="post">
 							<fieldset>
 								<legend>See more events</legend>

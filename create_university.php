@@ -141,6 +141,13 @@ if(!empty($_POST)) {
 					if($result){
 						echo '<li><a href="superadmin_dashboard.php">Dashboard</a></li>';
 					}
+					$webmaster_sql = "SELECT * FROM webmaster WHERE wid ='".$_SESSION['id']."'";
+					$prep_webmaster_sql = $dbh->prepare($webmaster_sql);
+					$prep_webmaster_sql->execute();
+					$result2 = $prep_webmaster_sql->fetch();
+					if($result2){
+						echo '<li><a href="webmaster_dashboard.php">Webmaster Dashboard</a></li>';
+					}
 					?>
 				</ul>
 			</nav>
