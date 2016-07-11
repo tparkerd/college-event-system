@@ -36,7 +36,7 @@
 					<li><a href="create.php">Create</a></li>
 					<li><a href="search.php">Search</a></li>
 					<li><a href="universities.php">Universities</a></li>
-					<?php
+					<?php if(isset($_SESSION['id'])){
 					$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 					$superadmin_sql = "SELECT * FROM superadmin WHERE superadmin_id ='".$_SESSION['id']."'";
 					$prep_sql = $dbh->prepare($superadmin_sql);
@@ -51,7 +51,7 @@
 					$result2 = $prep_webmaster_sql->fetch();
 					if($result2){
 						echo '<li><a href="webmaster_dashboard.php">Webmaster Dashboard</a></li>';
-					}
+					}}
 					?>
 				</ul>
 			</nav>
