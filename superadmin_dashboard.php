@@ -388,7 +388,7 @@ if(!empty($_POST)) {
                 // Second columnn (Date)
                 var td = $(document.createElement('td'))
                 // Get date
-                var datetime = new Date(row.event_date + ' 00:00:00 EDT')
+                var datetime = new Date(row.event_date)
 
                 // Format Date
                 var monthNames = [
@@ -398,7 +398,7 @@ if(!empty($_POST)) {
                                   "November", "December"
                                 ];
                 var month = monthNames[datetime.getMonth()]
-                var date = datetime.getDate() + ' ' + month + ' ' + datetime.getFullYear()
+                var date = (datetime.getDate() + 1) + ' ' + month + ' ' + datetime.getFullYear()
 
                 // Insert date into table
                 table.append(tr.append(td.text(date)))

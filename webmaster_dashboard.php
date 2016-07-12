@@ -389,11 +389,6 @@ if(!empty($_POST)) {
 
                         </tbody>
                       </table>
-
-                      <h4>TODOs</h4>
-                      <ol>
-                        <li>EVERYTHINGS</li>
-                      </ol>
                     </section>
                 </div>
             </div>
