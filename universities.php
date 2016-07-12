@@ -191,7 +191,7 @@ if (!empty($_POST))
 																		)
 						// Display photos of university
 						$('#university_photos').html($(document.createElement('a')).addClass('image full').attr('href', d.picture_one).append($(document.createElement('img')).attr('src', d.picture_one)))
-						$('#university_photos').append($(document.createElement('a')).addClass('image full').attr('href', d.picture_two).append($(document.createElement('img')).attr('src', d.picture_two)))
+						// $('#university_photos').append($(document.createElement('a')).addClass('image full').attr('href', d.picture_two).append($(document.createElement('img')).attr('src', d.picture_two)))
 						// Display description
 						$('#description').text(d.description)
 
@@ -234,7 +234,7 @@ if (!empty($_POST))
 																	)
 						// Display photos of university
 						$('#university_photos').html($(document.createElement('a')).addClass('image full').attr('href', data.picture_one).append($(document.createElement('img')).attr('src', data.picture_one)))
-						$('#university_photos').append($(document.createElement('a')).addClass('image full').attr('href', data.picture_two).append($(document.createElement('img')).attr('src', data.picture_two)))
+						// $('#university_photos').append($(document.createElement('a')).addClass('image full').attr('href', data.picture_two).append($(document.createElement('img')).attr('src', data.picture_two)))
 						// Display description
 						$('#description').text(data.description)
 					})
