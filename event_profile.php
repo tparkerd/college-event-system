@@ -249,7 +249,7 @@ if (isset($_POST['submit_comment'])) {
 							<h2>Location Info</h2>
 						</header>
 						<head>
-							<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBTaQ-DqnoRL13TyhDn3JxjGlDZtFmrkUs"></script>
+							<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAQtIzNgLAWTSDbXmQEgRBH9-bfGsmSRu4"></script>
 							<script>
 								function initialize() {
 									var myLatLng = {lat: <?php echo $lat?>, lng: <?php echo $long?>};
