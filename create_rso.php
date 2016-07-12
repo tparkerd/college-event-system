@@ -53,10 +53,12 @@ if (isset($_POST['submit'])) {
 
 		if($name_result == 0){
 			date_default_timezone_set('America/New_York');
-			$insert_rso_sql = "INSERT INTO rso(rso_name, admin_id) VALUES (:rso_name, :admin_id)";
+			$insert_rso_sql = "INSERT INTO rso(rso_name, admin_id,description) VALUES (:rso_name, :admin_id, :description)";
 			$insert_rso_stmt = $dbh->prepare($insert_rso_sql);
 			$insert_rso_stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_STR, 8);
 			$insert_rso_stmt->bindParam(':rso_name', $rso_name, PDO::PARAM_STR, 80);
+			$insert_rso_stmt->bindParam(':rso_name', $description, PDO::PARAM_STR, 500);
+
 			$insert_rso_stmt->execute() or die(print_r($insert_rso_stmt->errorInfo(), true));
 
 			$belongs_to_university_sql = "INSERT INTO belongs_to_university(rso_name, university_name) VALUES (:rso_name, :university_name)";

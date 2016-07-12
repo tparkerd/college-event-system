@@ -7,7 +7,7 @@ if (isset($_POST['submit'])) {
 	$public_search_query = "SELECT * FROM public_event WHERE event_date >= DATE(NOW()) AND approved_by_superadmin != ''";
 	$private_search_query = "SELECT * FROM private_event e WHERE event_date >= DATE(NOW()) AND approved_by_superadmin != '' AND ((SELECT university FROM student WHERE sid = e.approved_by_admin) = (SELECT university FROM student WHERE sid='".$_SESSION['id']."'))";
 	$pattern = "^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$";
-	$rso_search_query = "SELECT * FROM rso_event WHERE event_date >= DATE(NOW()) AND approved_by_superadmin != '' AND (SELECT rso_eid FROM owns_event WHERE rso_name = (SELECT rso_name FROM affiliates_rso WHERE sid='".$_SESSION['id']."'))";
+	$rso_search_query = "SELECT * FROM rso_event WHERE eid IN(SELECT rso_eid FROM owns_event WHERE rso_name IN (SELECT rso_name FROM joins_rso WHERE sid='".$_SESSION['id']."' and approved='1') AND rso_eid IN (SELECT eid FROM rso_e_approved_by)) AND event_date >= DATE(NOW())";
 	if (!empty($_POST['keywords']) && $_POST['keywords'] != ""){
 		$keywords = strval($_POST['keywords']);
 		$keywords_clause = "event_name LIKE '%".$keywords."%'";

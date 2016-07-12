@@ -224,7 +224,7 @@ if (!empty($_POST))
 						<div id="txtHint">
 							<?php
 							$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-							$sql="SELECT * FROM university LIMIT 1";
+							$sql="SELECT * FROM university WHERE university_name IN(SELECT university_name FROM university_approved_by) LIMIT 1";
 							$sth=$dbh->prepare($sql);
 							foreach ($dbh->query($sql) as $row) {
 								$uni_name = $row['university_name'];
@@ -281,7 +281,7 @@ if (!empty($_POST))
 								<br><br>
 								<?php
 								$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-								$sql ='SELECT university_name from university';
+								$sql ='SELECT university_name from university  WHERE university_name IN(SELECT university_name FROM university_approved_by)';
 								$stmt = $dbh->prepare($sql);
 								$stmt->execute();
 								$unames=$stmt->fetchAll();
