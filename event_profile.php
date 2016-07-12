@@ -52,7 +52,7 @@ if (isset($_POST['submit_comment'])) {
 <html>
 <head>
 	<title><?php print $event_name?></title>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />w
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta property="og:url"                content="http://sdickerson.ddns.net/" />
 	<meta property="og:type"               content="website" />
 	<meta property="og:title"              content="<?php print $event_name?>" />
