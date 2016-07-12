@@ -118,14 +118,12 @@ if(!empty($_POST)) {
         // If it is rso...
         if($response['event_type']) {
           try {
-            $sql = "INSERT INTO rso_approved_by VALUES(:eid, :superadmin_id)";
+            $sql = "INSERT INTO rso_e_approved_by VALUES(:eid, :superadmin_id)";
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam('eid', $_POST['eid'], PDO::PARAM_STR);
             $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
             $stmt->execute();
             $response['Inserting into RSO_approved_by'] = $stmt->fetchColumn();
-
-
           } catch (PDOException $e) {
             $response = $e->getMessage();
           }
