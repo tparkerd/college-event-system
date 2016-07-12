@@ -251,11 +251,11 @@ else
                                 <legend>Request to create an event</legend>
                                 <input style="width:220px;" type="text" name="name" placeholder="Event Name" required>
                                 <br><br>
-                                <input style="width:220px;" type="date" name="date" placeholder="date" required>
+                                <input style="width:220px;" type="date" name="date" placeholder="mm/dd/yyyy" required>
                                 <br><br>
-                                <input style="width:220px;" type="time" name="start_time"  required>
+                                <input style="width:220px;" type="time" name="start_time" placeholder="--:--" required>
                                 <br><br>
-                                <input style="width:220px;" type="time" name="end_time"  required>
+                                <input style="width:220px;" type="time" name="end_time" placeholder="--:--"  required>
                                 <br><br>
                                 <input type="text" style="width:220px;" id="location" name="location" placeholder="Location Name" required><br><br>
                                 <select style="width:220px;" name="university">
