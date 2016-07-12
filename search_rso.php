@@ -83,7 +83,7 @@ if(isset($_POST['join_rso'])){
 				<div class="9u skel-cell-important">
 					<section id="content" >
 						<header>
-							<h2>RSO Search Results</h2>
+							<h2>Registered Student Organizations</h2>
 						</header>
 						<ul class="style3">
 							<?php $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
@@ -107,7 +107,7 @@ if(isset($_POST['join_rso'])){
 									echo "</b></p><br><br></li>";
 								}
 							}
-							else if(isset($_POST['all'])) {
+							else if(isset($_POST['all']) || !isset($_POST['search'])) {
  								$sql = "SELECT * FROM belongs_to_university b WHERE university_name=(SELECT university FROM student WHERE sid='".$_SESSION['id']."') AND rso_name=(SELECT rso_name FROM rso_approved_by r WHERE b.rso_name=r.rso_name)";
 								$sth = $dbh->prepare($sql);
 								$sth->execute();
