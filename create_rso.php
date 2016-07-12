@@ -57,7 +57,7 @@ if (isset($_POST['submit'])) {
 			$insert_rso_stmt = $dbh->prepare($insert_rso_sql);
 			$insert_rso_stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_STR, 8);
 			$insert_rso_stmt->bindParam(':rso_name', $rso_name, PDO::PARAM_STR, 80);
-			$insert_rso_stmt->bindParam(':rso_name', $description, PDO::PARAM_STR, 500);
+			$insert_rso_stmt->bindParam(':description', $description, PDO::PARAM_STR, 500);
 
 			$insert_rso_stmt->execute() or die(print_r($insert_rso_stmt->errorInfo(), true));
 
