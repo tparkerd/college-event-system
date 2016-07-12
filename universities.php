@@ -1,5 +1,4 @@
 <?php session_start();
-// TODO(timp): implement a check for listing only approved universities (may need additional relationship in DB)
 // Check if the form was posted
 if (!empty($_POST))
 {
@@ -9,6 +8,9 @@ if (!empty($_POST))
 		echo json_encode("Please log in in order to join a university.");
 		exit;
 	}
+
+
+	$response = array();
 	// Connect to database
 	$host = 'sdickerson.ddns.net';
 	$port = '3306';
@@ -20,87 +22,117 @@ if (!empty($_POST))
 		$pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	} catch(PDOException $e) {
-		$error_type = $e->errorInfo[0];
+		$response['error'] = $e->errorInfo[0];
 	}
 	// If successfully connected to the database...
-	if(!isset($error_type)) {
-		// Declare the reponse
-		$response = array();
-		// See if the user is a super admin, if so, they can never change their university from their assigned one
-		try {
-			$sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
-			$stmt = $pdo->prepare($sql);
-			$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-			$stmt->execute();
-			$result = $stmt->fetchColumn();
-		} catch (PDOException $e) {
-			$response['error'] = $e->errorInfo[1];
-		}
-		// If they aren't a super admin, do not allow him/her ot switch universities
-		if ($result) {
-			$response['message'] = 'Since you are the super admin, you cannot switch universities.';
-			echo json_encode($response);
-			exit;
-		}
-		// Start checks
-		// Is user already affiliated with a university?
-		try {
-			$sql = "SELECT university_name FROM affiliates_university WHERE sid = :id";
-			$stmt = $pdo->prepare($sql);
-			$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-			$stmt->execute();
-			$response['university_name'] = $stmt->fetchColumn();
-		} catch (PDOException $e) {
-			$response['error'] = $e->errorInfo[1];
-		}
-		// If they are not assigned a university yet
-		if ($response['university_name']) {
-			// If the user already is a student of the university
-			if ($response['university_name'] == $_POST['university_name'])
-			{
-				// ERROR: Student already belongs to the university, do nothing
-				$response['message'] = "You are already a student of " . $_POST['university_name'];
-				// Student is switching universities
+	if(!isset($response['error']) && isset($_POST['action'])) {
+		// Always populate the drop down list
+		$sql = "SELECT university_name FROM university_approved_by ORDER BY university_name";
+		$stmt = $pdo->prepare($sql);
+		$stmt->execute();
+		$response['list'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		// Initialize what university should be shown
+		if ($_POST['action'] == 'init') {
+			try {
+				$sql = "SELECT * FROM university WHERE university_name IN (SELECT university_name FROM university_approved_by ORDER BY university_name) LIMIT 1";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':name', $_POST['university_name'], PDO::PARAM_STR);
+				$stmt->execute();
+				$response['default_university'] = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch (PDOException $e) {
+				$response['error'] = $e->getMessage();
+			}
+		// Load the data on the university into the page
+		} elseif ($_POST['action'] == 'load') {
+			try {
+				$sql = "SELECT * FROM university WHERE university_name = :name AND university_name IN (SELECT university_name FROM university_approved_by ORDER BY university_name)";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':name', $_POST['university_name'], PDO::PARAM_STR);
+				$stmt->execute();
+				$response = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch (PDOException $e) {
+				$response['error'] = $e->getMessage();
+			}
+
+		// Otherwise, the user must be trying to join a university
+		} elseif($_POST['action'] == 'join') {
+			// See if the user is a super admin, if so, they can never change their university from their assigned one
+			try {
+				$sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+				$stmt->execute();
+				$result = $stmt->fetchColumn();
+			} catch (PDOException $e) {
+				$response['error'] = $e->errorInfo[1];
+			}
+			// If they aren't a super admin, do not allow him/her ot switch universities
+			if ($result) {
+				$response['message'] = 'Since you are the super admin, you cannot switch universities.';
+				echo json_encode($response);
+				exit;
+			}
+			// Start checks
+			// Is user already affiliated with a university?
+			try {
+				$sql = "SELECT university_name FROM affiliates_university WHERE sid = :id";
+				$stmt = $pdo->prepare($sql);
+				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+				$stmt->execute();
+				$response['university_name'] = $stmt->fetchColumn();
+			} catch (PDOException $e) {
+				$response['error'] = $e->errorInfo[1];
+			}
+			// If they are not assigned a university yet
+			if ($response['university_name']) {
+				// If the user already is a student of the university
+				if ($response['university_name'] == $_POST['university_name'])
+				{
+					// ERROR: Student already belongs to the university, do nothing
+					$response['message'] = "You are already a student of " . $_POST['university_name'];
+					// Student is switching universities
+				} else {
+					try {
+						// Update the student's university attribute
+						$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
+						$stmt = $pdo->prepare($sql);
+						$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+						$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+						$stmt->execute();
+						// Update affiliates_university
+						$sql = "UPDATE affiliates_university SET university_name = :university_name WHERE sid = :id";
+						$stmt = $pdo->prepare($sql);
+						$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
+						$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+						$stmt->execute();
+					}	catch (PDOException $e) {
+						$response['error'] = $e->errorInfo[1];
+					}
+					$response['message'] = "You have successfully switched to " . $_POST['university_name'];
+				}
 			} else {
+				// Otherwise, the student does not have a university set.
+				// Therefore, assign them to the university of their liking
+				// UPDATE student & INSERT affiliates_university
 				try {
 					// Update the student's university attribute
 					$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
 					$stmt = $pdo->prepare($sql);
-					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
 					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
 					$stmt->execute();
-					// Update affiliates_university
-					$sql = "UPDATE affiliates_university SET university_name = :university_name WHERE sid = :id";
+					// Affiliate the user with the university to increase student count
+					$sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
 					$stmt = $pdo->prepare($sql);
-					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
 					$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
+					$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
 					$stmt->execute();
-				}	catch (PDOException $e) {
+					$response['message'] = "You have successfully joined " . $_POST['university_name'];
+				} catch (PDOException $e) {
+					// Get the error code
 					$response['error'] = $e->errorInfo[1];
 				}
-				$response['message'] = "You have successfully switched to " . $_POST['university_name'];
-			}
-		} else {
-			// Otherwise, the student does not have a university set.
-			// Therefore, assign them to the university of their liking
-			// UPDATE student & INSERT affiliates_university
-			try {
-				// Update the student's university attribute
-				$sql = "UPDATE student SET university = :university_name WHERE sid = :id";
-				$stmt = $pdo->prepare($sql);
-				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-				$stmt->execute();
-				// Affiliate the user with the university to increase student count
-				$sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
-				$stmt = $pdo->prepare($sql);
-				$stmt->bindParam(':id', $_SESSION['id'], PDO::PARAM_STR);
-				$stmt->bindParam(':university_name', $_POST["university_name"], PDO::PARAM_STR);
-				$stmt->execute();
-				$response['message'] = "You have successfully joined " . $_POST['university_name'];
-			} catch (PDOException $e) {
-				// Get the error code
-				$response['error'] = $e->errorInfo[1];
 			}
 		}
 		// Return the message to the AJAX call
@@ -129,30 +161,96 @@ if (!empty($_POST))
 	<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
 	<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
 	<script type="text/javascript">
-		function getUniversityProfile(name) {
-			if (name == "") {
-				name='University of Central Florida';
-			}
-			if (window.XMLHttpRequest) {
-				// code for IE7+, Firefox, Chrome, Opera, Safari
-				xmlhttp = new XMLHttpRequest();
-			} else {
-				// code for IE6, IE5
-				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			xmlhttp.onreadystatechange = function () {
-				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					document.getElementById("txtHint").innerHTML = xmlhttp.responseText;
-				}
-			};
-			xmlhttp.open("GET", "get_university.php?q="+name,true);
-			xmlhttp.send();
-		}
 		// AJAX call to same page to join university
 		$(function() {
+
+			// Initialize the page with University of Central Florida information
+				var formData = {
+					'university_name' : 'University of Central Florida',
+					'action' : 'init'
+				}
+
+				$.ajax({
+					type			: 'POST',
+					url				: '',
+					data			: formData,
+					dataType	: 'json',
+					encode		: true
+				})
+					.done(function(data) {
+						var d = data.default_university
+						// Display name
+						$('#university_name').text(d.university_name)
+						// Display address
+						$('#address').text(d.address)
+						// Display number of afffiliated students
+						$('#num_students').text(
+																		(parseInt(d.num_students) == 1) ?
+																		'There is 1 student registered for ' + d.university_name + '.' :
+																		'There are ' + d.num_students + ' students registered for ' + d.university_name + '.'
+																		)
+						// Display photos of university
+						$('#university_photos').html($(document.createElement('a')).addClass('image full').attr('href', d.picture_one).append($(document.createElement('img')).attr('src', d.picture_one)))
+						$('#university_photos').append($(document.createElement('a')).addClass('image full').attr('href', d.picture_two).append($(document.createElement('img')).attr('src', d.picture_two)))
+						// Display description
+						$('#description').text(d.description)
+
+						// Populate the drop down menu
+						var list = $('#university_list')
+						for (var row in data.list) {
+							list.append($(document.createElement('option')).attr('value', data.list[row].university_name).text(data.list[row].university_name))
+						}
+					})
+					.fail(function(data) {
+						console.log('Fail')
+					})
+					.always(function(data) {
+						console.log(data)
+					})
+
+			$('#university_list').change(function(e) {
+				var formData = {
+					'university_name' : $('select[name=university_name]').val(),
+					'action' : 'load'
+				}
+
+				$.ajax({
+					type			: 'POST',
+					url				: '',
+					data			: formData,
+					dataType	: 'json',
+					encode		: true
+				})
+					.done(function(data) {
+						// Display name
+						$('#university_name').text(data.university_name)
+						// Display address
+						$('#address').text(data.address)
+						// Display number of afffiliated students
+						$('#num_students').text(
+																		(parseInt(data.num_students) == 1) ?
+																		'There is 1 student registered for ' + data.university_name + '.' :
+																		'There are ' + data.num_students + ' students registered for ' + data.university_name + '.'
+																	)
+						// Display photos of university
+						$('#university_photos').html($(document.createElement('a')).addClass('image full').attr('href', data.picture_one).append($(document.createElement('img')).attr('src', data.picture_one)))
+						$('#university_photos').append($(document.createElement('a')).addClass('image full').attr('href', data.picture_two).append($(document.createElement('img')).attr('src', data.picture_two)))
+						// Display description
+						$('#description').text(data.description)
+					})
+					.fail(function(data) {
+						console.log('Fail')
+					})
+					.always(function(data) {
+						console.log(data)
+					})
+
+			})
+
 			$('#form_join_university').submit(function(event) {
 				var formData = {
-					'university_name' : $('select[name=university_name]').val()
+					'university_name' : $('select[name=university_name]').val(),
+					'type' 						: 'join'
 				}
 				$.ajax({
 					type			: 'POST',
@@ -222,20 +320,6 @@ if (!empty($_POST))
 				<div class="9u skel-cell-important" >
 					<section id="section-content">
 						<div id="txtHint">
-							<?php
-							$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-							$sql="SELECT * FROM university WHERE university_name IN(SELECT university_name FROM university_approved_by) LIMIT 1";
-							$sth=$dbh->prepare($sql);
-							foreach ($dbh->query($sql) as $row) {
-								$uni_name = $row['university_name'];
-								$address= $row['address'];
-								$img_url_1 = $row['picture_one'];
-								$img_url_2 = $row['picture_two'];
-								$description = $row['description'];
-								$num_students = $row['num_students'];
-							}
-							$dbh=null;
-							?>
 							<div class="container">
 								<div class="row">
 									<div class="3u">
@@ -246,10 +330,10 @@ if (!empty($_POST))
 											<ul class="style3">
 												<li class="first">
 													<p class="date">Address</p>
-													<p><?php print $address?></p>
+													<p id="address"></p>
 												</li>
 												<li>
-													<p> There are <?php print $num_students?> registered students for <?php print $uni_name?>.</p>
+													<p id="num_students"></p>
 												</li>
 											</ul>
 										</section>
@@ -257,10 +341,10 @@ if (!empty($_POST))
 									<div class="6u">
 										<section id="box2">
 											<header>
-												<h2><?php print $uni_name ?></h2>
+												<h2 id="university_name"></h2>
 											</header>
-											<div> <a href="#" class="image full"><img src="<?php echo $img_url_1?>" alt=""></a> </div>
-											<p><?php print $description?></p>
+											<div id="university_photos"></div>
+											<p id="description"></p>
 										</section>
 									</div>
 
@@ -279,17 +363,8 @@ if (!empty($_POST))
 							<fieldset>
 								<legend>Add a university to your profile to see more events</legend>
 								<br><br>
-								<?php
-								$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-								$sql ='SELECT university_name from university  WHERE university_name IN(SELECT university_name FROM university_approved_by)';
-								$stmt = $dbh->prepare($sql);
-								$stmt->execute();
-								$unames=$stmt->fetchAll();
-								?>
-								<select name="university_name" onchange="getUniversityProfile(this.value)" style="width:260px;padding-bottom:5px" id="university" placeholder="University">
-									<?php foreach($unames as $uname):?>
-										<option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
-									<?php endforeach; ?>
+								<select name="university_name" style="width:260px;padding-bottom:5px" id="university_list">
+										<option selected="true" disabled>Select a university</option>
 								</select>
 								<br><br>
 								<button type="submit" class="small-button">Join</button>
