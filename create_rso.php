@@ -78,12 +78,7 @@ if (isset($_POST['submit'])) {
 			$joins_rso_stmt ->bindValue(':approved', 1);
 			$joins_rso_stmt ->bindValue(':since', date("Y-m-d"));
 			$joins_rso_stmt->execute() or die(print_r($joins_rso_stmt->errorInfo(), true));
-
-			$owns_rso_sql = "INSERT INTO owns_rso(admin_id, rso_name) VALUES (:admin_id, :rso_name)";
-			$owns_rso_stmt = $dbh->prepare($owns_rso_sql);
-			$owns_rso_stmt->bindParam(':admin_id', $admin_id, PDO::PARAM_STR, 8);
-			$owns_rso_stmt->bindParam(':rso_name', $rso_name, PDO::PARAM_STR, 80);
-			$owns_rso_stmt->execute() or die(print_r($owns_rso_stmt->errorInfo(), true));
+			
 
 		}
 		else{

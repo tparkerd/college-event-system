@@ -125,12 +125,7 @@ if(!empty($_POST)) {
             $stmt->execute();
             $response['Inserting into RSO_approved_by'] = $stmt->fetchColumn();
 
-            // Make the user an admin
-            $sql = "INSERT INTO admin(admin_id, given_name, family_name, email, pword) SELECT sid, given_name, family_name, email, pword FROM student WHERE sid = :id";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam('id', $_SESSION['id'], PDO::PARAM_STR);
-            $stmt->execute();
-            $response['Inserting into admin'] = $stmt->fetchColumn();
+
           } catch (PDOException $e) {
             $response = $e->getMessage();
           }
@@ -199,24 +194,39 @@ if(!empty($_POST)) {
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam('rso_name', $_POST['rso_name'], PDO::PARAM_STR);
             $stmt->bindParam('superadmin_id', $_SESSION['id'], PDO::PARAM_STR);
-            $response = $stmt->execute();
+            $stmt->execute();
 
             // Get the ID of the user who created the RSO
             $sql = "SELECT sid FROM creates_rso WHERE rso_name = :rso_name";
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
             $stmt->execute();
+              $rso_admin_id = $stmt->fetch();
+
             // $response['id'] = $stmt->fetchColumn();
+            // Make the user an admin
+            $sql = "INSERT INTO admin(admin_id, given_name, family_name, email, pword) SELECT sid, given_name, family_name, email, pword FROM student WHERE sid = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':id', $rso_admin_id, PDO::PARAM_STR);
+            $stmt->execute();
 
             // Affiliate the student with the RSO
       			$sql = "INSERT INTO affiliates_rso(sid, rso_name) VALUES (:sid, :rso_name)";
       			$affiliates_rso_stmt = $pdo->prepare($sql);
-      			$affiliates_rso_stmt->bindParam(':sid', $id, PDO::PARAM_STR);
+      			$affiliates_rso_stmt->bindParam(':sid', $_SESSION['id'], PDO::PARAM_STR);
       			$affiliates_rso_stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
       			$affiliates_rso_stmt->execute();
+
+              $owns_rso_sql = "INSERT INTO owns_rso(admin_id, rso_name) VALUES (:admin_id, :rso_name)";
+              $owns_rso_stmt = $pdo->prepare($owns_rso_sql);
+              $owns_rso_stmt->bindParam(':admin_id', $_SESSION['id'], PDO::PARAM_STR, 8);
+              $owns_rso_stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR, 80);
+              $owns_rso_stmt->execute() or die(print_r($owns_rso_stmt->errorInfo(), true));
+            echo json_encode($response);
           } catch (PDOException $e) {
             // $response['error'] = $e->getMessage();
           }
+
           echo json_encode($response);
           exit;
 
