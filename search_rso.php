@@ -4,7 +4,6 @@ if(isset($_POST['search']))
 	$keywords = $_POST['rso_name'];
 
 if(isset($_POST['join_rso'])){
-	print "requested to join ".$_POST['join_rso_name'];
 	$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 	$sql = "INSERT INTO joins_rso(sid, rso_name, approved, since) VALUES (:sid, :rso_name, :approved, :since)";
 	$sth = $dbh->prepare($sql);
@@ -12,6 +11,15 @@ if(isset($_POST['join_rso'])){
 	$sth->bindParam(':rso_name', $_POST['join_rso_name']);
 	$sth->bindValue(':approved', 0);
 	$sth->bindValue(':since', null);
+	$sth->execute();
+}
+
+if(isset($_POST['leave_rso'])){
+	$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
+	$sql = "DELETE FROM joins_rso WHERE sid=:sid AND rso_name=:rso_name LIMIT 1";
+	$sth = $dbh->prepare($sql);
+	$sth->bindParam(':sid', $_SESSION['id']);
+	$sth->bindParam(':rso_name', $_POST['leave_rso_name']);
 	$sth->execute();
 }
 ?>
@@ -117,8 +125,19 @@ if(isset($_POST['join_rso'])){
 									$sth2 = $dbh->prepare($sql);
 									$sth2->execute();
 									$description = $sth2->fetchColumn();
+									$sql_check_membership = "SELECT COUNT(*) FROM joins_rso WHERE sid='".$_SESSION['id']."' AND rso_name='".$rso_name."'";
+									$prep_check_mem = $dbh->prepare($sql_check_membership);
+									$prep_check_mem->execute();
+									$result = $prep_check_mem->fetch(PDO::FETCH_NUM);
+									$is_member = $result[0];
+
 									echo "<li>";
-									echo '<form action="" method="POST"><input type="hidden" name="join_rso_name" value="'.$rso_name.'"><button style="height:50px; width:100px; float:right;font-size:smaller;display:inline-block;" class="small-button" type="submit" id="join_rso" name="join_rso">Join</button></form>';
+									if(!$is_member) {
+										echo '<form action="" method="POST"><input type="hidden" name="join_rso_name" value="' . $rso_name . '"><button style="height:50px; width:100px; float:right;font-size:smaller;display:inline-block;" class="small-button" type="submit" id="join_rso" name="join_rso">Join</button></form>';
+									}
+									else{
+										echo '<form action="" method="POST"><input type="hidden" name="leave_rso_name" value="' . $rso_name . '"><button style="height:50px; width:100px; float:right;font-size:smaller;display:inline-block;" class="small-button" type="submit" id="leave_rso" name="leave_rso">Leave</button></form>';
+									}
 									echo '<p style="font-size:24pt;"><u><a href="#">';
 									print $rso_name;
 									echo "</a></u>";
