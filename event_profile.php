@@ -53,7 +53,7 @@ if (isset($_POST['submit_comment'])) {
 <head>
 	<title><?php print $event_name?></title>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<meta property="og:url"                content="http://sdickerson.ddns.net/" />
+	<meta property="og:url"                content="http://sdickerson.ddns.net/event_profile.php?eid=<?php echo $event_id?>" />
 	<meta property="og:type"               content="website" />
 	<meta property="og:title"              content="<?php print $event_name?>" />
 	<meta property="og:description"        content="<?php print $event_desc?>" />
@@ -163,7 +163,7 @@ if (isset($_POST['submit_comment'])) {
 							<br> Phone: <?php print $contact_phone;?></p>
 						<p><?php print $event_desc;?></p>
 						<br>
-						<div class="fb-share-button" data-href="http://sdickerson.ddns.net/event_profile.php?eid=<?php print $event_id?>" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A63342%2Fcollege-event-website%2Fevent_profile.html%3F_ijt%3Duaupj23v5ohnmh2o24o8e9g2dr&amp;src=sdkpreparse">Share</a></div>
+						<div class="fb-share-button" data-href="http://sdickerson.ddns.net/event_profile.php?eid=<?php echo $event_id?>" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?&amp;src=sdkpreparse">Share</a></div>
 						<br><br>
 						<a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out this event:" data-size="large">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 					</section>

@@ -3,10 +3,10 @@
 <head>
     <title>College Events</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
     <script src="js/skel.min.js"></script>
     <script src="js/init.js"></script>
 
