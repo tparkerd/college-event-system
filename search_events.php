@@ -220,10 +220,24 @@ $private_search_query .= " ORDER BY event_date";
 								<br>
 								<select style="width:190px" name="category" placeholder="Event Category">
 									<option value="" disabled selected>Event Category</option>
-									<option value="concert">Concert</option>
-									<option value="tech-talk">Tech Talk</option>
-									<option value="hackathon">Hack-A-Thon</option>
-									<option value="hackathon">Sporting Event</option>
+									<option value="" disabled selected>Event Category</option>
+									<option value="academic">Academic</option>
+									<option value="arts">Arts Exhibit</option>
+									<option value="career">Career/Jobs</option>
+									<option value="concert">Concert/Performance</option>
+									<option value="entertainment">Entertainment</option>
+									<option value="health"">Health</option>
+									<option value="homecoming">Homecoming</option>
+									<option value="meeting">Meeting</option>
+									<option value="forum">Open Forum</option>
+									<option value="rec">Recreation & Excercise</option>
+									<option value="service">Service/Volunteer</option>
+									<option value="social">Social Event</option>
+									<option value="speaker">Speaker/Lecture/Seminar</option>
+									<option value="sports">Sports</option>
+									<option value="tour">Tour/Open House/Information Session</option>
+									<option value="other">Other</option>
+									<option value="workshop">Workshop/Conference</option>
 								</select> <br><br>
 								<label for="search_start_date">
 									<div style="text-align:left;margin-left:40px">From: <br><br></div>

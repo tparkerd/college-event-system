@@ -274,12 +274,23 @@ else
                                 <br><br>
                                 <select style="width:220px;" name="category" placeholder="Event Category" required>
                                     <option value="" disabled selected>Event Category</option>
-                                    <option value="concert">Concert</option>
-                                    <option value="tech-talk">Tech Talk</option>
-                                    <option value="hackathon">Hack-A-Thon</option>
-                                    <option value="sports">Sporting Event</option>
+                                    <option value="academic">Academic</option>
+                                    <option value="arts">Arts Exhibit</option>
+                                    <option value="career">Career/Jobs</option>
+                                    <option value="concert">Concert/Performance</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="health"">Health</option>
                                     <option value="homecoming">Homecoming</option>
-
+                                    <option value="meeting">Meeting</option>
+                                    <option value="forum">Open Forum</option>
+                                    <option value="rec">Recreation & Excercise</option>
+                                    <option value="service">Service/Volunteer</option>
+                                    <option value="social">Social Event</option>
+                                    <option value="speaker">Speaker/Lecture/Seminar</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="tour">Tour/Open House/Information Session</option>
+                                    <option value="other">Other</option>
+                                    <option value="workshop">Workshop/Conference</option>
                                 </select>
                                 <br><br>
                                 <select style="width:220px;" name="privacy" placeholder="Event Type" required>
