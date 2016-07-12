@@ -44,7 +44,6 @@ if (!$result)
 if(!empty($_POST)) {
   // Is this a call to approve or reject an event?
   if(isset($_POST['action'])) {
-
     // If it's an event action
     if ($_POST['type'] == 'event') {
       // If it's an approval, insert the event into the approved event of its type
@@ -199,7 +198,7 @@ if(!empty($_POST)) {
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
             $stmt->execute();
-              $rso_admin_id = $stmt->fetch();
+            $rso_admin_id = $stmt->fetchColumn();
 
             // $response['id'] = $stmt->fetchColumn();
             // Make the user an admin
@@ -708,13 +707,8 @@ if(!empty($_POST)) {
                           </tr>
                         </thead>
                         <tbody>
-
                         </tbody>
                       </table>
-                      <h4>TODOs</h4>
-                      <ol>
-                        <li>Do we want to create RSO profile pages to link to?</li>
-                      </ol>
                     </section>
                 </div>
             </div>
