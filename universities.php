@@ -131,7 +131,7 @@ if (!empty($_POST))
 					$response['message'] = "You have successfully joined " . $_POST['university_name'];
 				} catch (PDOException $e) {
 					// Get the error code
-					$response['error'] = $e->errorInfo[1];
+					$response['error'] = $e->getMessage();
 				}
 			}
 		}
@@ -250,7 +250,7 @@ if (!empty($_POST))
 			$('#form_join_university').submit(function(event) {
 				var formData = {
 					'university_name' : $('select[name=university_name]').val(),
-					'type' 						: 'join'
+					'action' 						: 'join'
 				}
 				$.ajax({
 					type			: 'POST',
