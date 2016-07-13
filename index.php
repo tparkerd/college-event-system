@@ -113,14 +113,14 @@
 								$sth->execute();
 								$name = $sth->fetchColumn(0);
 								echo '<header><h2> Welcome, '.$name.'!</h2></header>';
-								echo '<form action="session_stop.php" class="pure-form" method="post"> <button type="submit" value="Log out" class="small-button">Log out </button>';}
+								echo '<form action="session.php" class="pure-form" method="post"> <button type="submit" value="Log out" class="small-button">Log out </button>';}
 								else {
 
 							echo <<<EOD
 						<header>
 							<h2>Log In</h2>
 						</header>
-						<form action="session_start.php" method="post" class="pure-form" method="post">
+						<form action="session.php" method="post" class="pure-form" method="post">
 							<fieldset>
 								<legend>See more events</legend>
 								<input name="username" type="email" placeholder="Email">
