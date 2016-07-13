@@ -144,13 +144,13 @@
 										<br><br>
 										<?php
 										$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
-										$sql ='SELECT university_name from university';
+										$sql ='SELECT university_name from university WHERE university_name IN (SELECT university_name FROM university_approved_by)';
 										$stmt = $dbh->prepare($sql);
 										$stmt->execute();
 										$unames=$stmt->fetchAll();
 										?>
 										<select name="university" style="width:25%;padding-bottom:5px" id="university" placeholder="University">
-											<option value=""></option>
+											<option>Select a University</option>
 											<?php foreach($unames as $uname):?>
 												<option value="<?php print $uname['university_name']?>"><?php print $uname['university_name']; ?></option>
 											<?php endforeach; ?>
