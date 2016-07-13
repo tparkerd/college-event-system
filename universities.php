@@ -2,14 +2,6 @@
 // Check if the form was posted
 if (!empty($_POST))
 {
-	// Check if a user is logged in
-	if(!isset($_SESSION['id']))
-	{
-		echo json_encode("Please log in in order to join a university.");
-		exit;
-	}
-
-
 	$response = array();
 	// Connect to database
 	$host = 'sdickerson.ddns.net';
@@ -22,7 +14,7 @@ if (!empty($_POST))
 		$pdo = new PDO('mysql:host='.$host.';dbname='.$db.';port=3306', $user, $pass);
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	} catch(PDOException $e) {
-		$response['error'] = $e->errorInfo[0];
+		$response['error'] = $e->errorInfo;
 	}
 	// If successfully connected to the database...
 	if(!isset($response['error']) && isset($_POST['action'])) {
@@ -37,7 +29,6 @@ if (!empty($_POST))
 			try {
 				$sql = "SELECT * FROM university WHERE university_name IN (SELECT university_name FROM university_approved_by ORDER BY university_name) LIMIT 1";
 				$stmt = $pdo->prepare($sql);
-				$stmt->bindParam(':name', $_POST['university_name'], PDO::PARAM_STR);
 				$stmt->execute();
 				$response['default_university'] = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch (PDOException $e) {
@@ -57,6 +48,13 @@ if (!empty($_POST))
 
 		// Otherwise, the user must be trying to join a university
 		} elseif($_POST['action'] == 'join') {
+			// Check if a user is logged in
+			if(!isset($_SESSION['id']))
+			{
+				$response['message'] = "Please log in in order to join a university.";
+				echo json_encode($response);
+				exit;
+			}
 			// See if the user is a super admin, if so, they can never change their university from their assigned one
 			try {
 				$sql = "SELECT COUNT(*) FROM superadmin WHERE superadmin_id = :id";
@@ -82,7 +80,7 @@ if (!empty($_POST))
 				$stmt->execute();
 				$response['university_name'] = $stmt->fetchColumn();
 			} catch (PDOException $e) {
-				$response['error'] = $e->errorInfo[1];
+				$response['error'] = $e->getMessage();
 			}
 			// If they are not assigned a university yet
 			if ($response['university_name']) {
@@ -166,7 +164,7 @@ if (!empty($_POST))
 
 			// Initialize the page with University of Central Florida information
 				var formData = {
-					'university_name' : 'University of Central Florida',
+					// 'university_name' : 'University of Central Florida',
 					'action' : 'init'
 				}
 
@@ -179,6 +177,7 @@ if (!empty($_POST))
 				})
 					.done(function(data) {
 						var d = data.default_university
+						console.log(d)
 						// Display name
 						$('#university_name').text(d.university_name)
 						// Display address
@@ -260,10 +259,12 @@ if (!empty($_POST))
 					encode		: true
 				})
 					.done(function(data) {
-						console.log(data)
 						$('#form_join_university').parent().html(data.message)
 					})
 					.fail(function(data) {
+						console.log('AJAX Failed')
+					})
+					.always(function(data) {
 						console.log(data)
 					})
 				event.preventDefault()
