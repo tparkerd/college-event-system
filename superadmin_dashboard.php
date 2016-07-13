@@ -214,14 +214,13 @@ if(!empty($_POST)) {
       			$affiliates_rso_stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
       			$affiliates_rso_stmt->execute();
 
-              $owns_rso_sql = "INSERT INTO owns_rso(admin_id, rso_name) VALUES (:admin_id, :rso_name)";
-              $owns_rso_stmt = $pdo->prepare($owns_rso_sql);
-              $owns_rso_stmt->bindParam(':admin_id', $_SESSION['id'], PDO::PARAM_STR, 8);
-              $owns_rso_stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR, 80);
-              $owns_rso_stmt->execute() or die(print_r($owns_rso_stmt->errorInfo(), true));
-            echo json_encode($response);
+            $owns_rso_sql = "INSERT INTO owns_rso(admin_id, rso_name) VALUES (:admin_id, :rso_name)";
+            $owns_rso_stmt = $pdo->prepare($owns_rso_sql);
+            $owns_rso_stmt->bindParam(':admin_id', $_SESSION['id'], PDO::PARAM_STR, 8);
+            $owns_rso_stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR, 80);
+            $owns_rso_stmt->execute() or die(print_r($owns_rso_stmt->errorInfo(), true));
           } catch (PDOException $e) {
-            // $response['error'] = $e->getMessage();
+            // $response['error'] = $e->getMessage(); // TODO(timp): see why this wasn't happy about the array thing from before
           }
 
           echo json_encode($response);
