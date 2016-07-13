@@ -251,7 +251,7 @@ else
                                 <legend>Request to create an event</legend>
                                 <input style="width:220px;" type="text" name="name" placeholder="Event Name" required>
                                 <br><br>
-                                <input style="width:220px;" type="date" name="date" placeholder="mm/dd/yyyy" required>
+                                <input style="width:220px;" type="date" name="date" placeholder="yyyy-mm-dd" required>
                                 <br><br>
                                 <input style="width:220px;" type="time" name="start_time" placeholder="--:--" required>
                                 <br><br>
