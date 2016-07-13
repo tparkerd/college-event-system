@@ -442,10 +442,10 @@ if(!empty($_POST)) {
                 // First column (RSO name)
                 var td = $(document.createElement('td'))
                 // Get name and make it a URL link to its page
-                // var name = $(document.createElement('a')).attr('href', 'rso_profile.php?rso_name=' + row.rso_name).text(row.rso_name) // NOTE(timp): RSO Profile pages are empty until approved, so removed link
+                var name = $(document.createElement('a')).attr('href', 'rso_profile.php?name=' + row.rso_name).text(row.rso_name)
 
                 // Add to table
-                table.append(tr.append(td.text(row.rso_name)))
+                table.append(tr.append(td.append(name)))
 
                 // Second column (Creator name)
                 // Add to table
