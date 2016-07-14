@@ -2,6 +2,7 @@
 session_start();
 $response = array();
 $response['error'] = array();
+$_SESSION['message'] = '';
 
 // If the user is already logged in, log out
 if (isset($_SESSION['id']) && $_SESSION['id'] != '') {
@@ -41,6 +42,8 @@ if (isset($_SESSION['id']) && $_SESSION['id'] != '') {
       $_SESSION['id'] = $user["sid"];
       $response['user id'] = $_SESSION['id'];
       $response['message'] = "Welcome, " . $user["name"] . "!";
+    } else {
+      $_SESSION['message'] = 'User not found. Make sure you have entered the correct email and password.';
     }
   }
 }

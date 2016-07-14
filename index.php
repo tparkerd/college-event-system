@@ -133,7 +133,14 @@
 							</fieldset>
 						</form>
 EOD;
-						} ?>
+						}
+
+
+
+						if (isset($_SESSION['message']))
+							echo '<br><p>' . $_SESSION['message'] . '</p>'
+
+						?>
 
 					</section>
 
