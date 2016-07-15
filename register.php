@@ -24,7 +24,7 @@
       $sth->bindParam(':pword', $password, PDO::PARAM_STR, 100);
 
       // If an initial university was chosen, include it at creation
-      if(!empty($_POST['university']))
+      if(!empty($_POST['university']) && $_POST['university'] != 'Select a University')
         $sth->bindParam(':university', $_POST['university'], PDO::PARAM_STR, 100);
       else
         $sth->bindValue(':university', null, PDO::PARAM_INT);
