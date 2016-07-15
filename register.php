@@ -36,7 +36,7 @@
 
 
     // If a university was chosen, make sure to affiliate it with the student
-    if(!empty($_POST['university'])) {
+    if(!empty($_POST['university']) && $_POST['university'] != 'Select a University') {
       try {
         // Affiliate the user with the university to increase student count
         $sql = "INSERT INTO affiliates_university VALUES(:id, :university_name)";
