@@ -3,7 +3,7 @@
 $dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 echo '<title>College Events</title>';
 
-$rso_error = $name_taken_error = $email_error = $email_error2 = $university_error = $description_error = "";
+$rso_error = $name_taken_error = $email_error = $email_error2  = $email_error3 = $university_error = $description_error= "";
 
 if (isset($_POST['submit'])) {
 	$admin_id = $_SESSION['id'];
@@ -36,6 +36,26 @@ if (isset($_POST['submit'])) {
 		if(!(($domain1 == $domain2) && ($domain2 == $domain3) && ($domain3 == $domain4) && ($domain4 == $domain5))){
 			$email_error2 = "All emails must have the same domain name";
 		}
+		// Check if any of the emails are duplicates
+		$email_array = array();
+		// Construct an array of the entered email addresses
+		for ($i = 0; $i < 5; $i++) {
+			$$i = 'mem' . ($i + 1) . '_email';
+			array_push($email_array, explode("@", $_POST[$$i])[0]);
+		}
+		// Assume they are unique unless proven otherwise
+		$emails_are_unique = true;
+		for ($i = 0; $i < count($email_array) && $emails_are_unique; $i++) {
+			for ($j = $i + 1; $j < count($email_array); $j++) {
+				// If a match is found, they are not unique and bail out
+				if ($email_array[$i] == $email_array[$j]) {
+					$emails_are_unique = false;
+					break;
+				}
+			}
+		}
+		if (!$emails_are_unique)
+			$email_error3 = 'Each email should be unique.';
 	}
 	if (!empty($_POST['description'])) {
 		$description = strval($_POST['description']);
@@ -43,7 +63,7 @@ if (isset($_POST['submit'])) {
 		$description_error = "Description is required";
 	}
 
-	if($rso_error == "" && $university_error == "" && $email_error == "" && $email_error2 == "" && $description_error == ""){
+	if($rso_error == "" && $university_error == "" && $email_error == "" && $email_error2 == "" && $email_error3 == "" && $description_error == ""){
 		$dbh = new PDO('mysql:host=sdickerson.ddns.net;port=3306;dbname=ces', 'root', 'S#8roN*PJTMQWJ4m');
 		$rso_name_sql = "SELECT COUNT(*) FROM rso WHERE rso_name ='".$rso_name."'";
 		$rso_name_stmt = $dbh->prepare($rso_name_sql);
@@ -80,7 +100,7 @@ if (isset($_POST['submit'])) {
 			$joins_rso_stmt ->bindValue(':approved', 1);
 			$joins_rso_stmt ->bindValue(':since', date("Y-m-d"));
 			$joins_rso_stmt->execute() or die(print_r($joins_rso_stmt->errorInfo(), true));
-			
+
 
 		}
 		else{
@@ -206,11 +226,13 @@ if (isset($_POST['submit'])) {
 								<input style="width:80%;" type="email" name="mem5_email" placeholder="Member E-mail"><br><br>
 								<?php if($email_error != "") echo '<div>'.$email_error.'</div><br>';?>
 								<?php if($email_error2 != "") echo '<div>'.$email_error2.'</div><br>';?>
+								<?php if($email_error3 != "") echo '<div>'.$email_error3.'</div><br>';?>
 								<textarea style="width:80%;" rows="8" placeholder="Enter your organization description here." name="description"></textarea><br><br>
 								<?php if($description_error != "") echo '<div>'.$description_error.'</div><br>';?>
 								<button type="submit" name="submit" id="submit" class="small-button">Submit</button>
 							</fieldset>
 						</form>
+						<?php if(!empty($_POST) && $rso_error == "" && $university_error == "" && $email_error == "" && $email_error2 == "" && $email_error3 == "" && $description_error == "") echo 'You have succesfully submitted your request to create an RSO.'; ?>
 					</section>
 				</div>
 			</div>
