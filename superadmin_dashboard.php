@@ -208,11 +208,11 @@ if(!empty($_POST)) {
             $stmt->execute();
 
             // Affiliate the student with the RSO
-      			$sql = "INSERT INTO affiliates_rso(sid, rso_name) VALUES (:sid, :rso_name)";
-      			$affiliates_rso_stmt = $pdo->prepare($sql);
-      			$affiliates_rso_stmt->bindParam(':sid', $_SESSION['id'], PDO::PARAM_STR);
-      			$affiliates_rso_stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
-      			$affiliates_rso_stmt->execute();
+      			$sql = "INSERT INTO joins_rso(sid, rso_name) VALUES (:sid, :rso_name)";
+      			$stmt = $pdo->prepare($sql);
+      			$stmt->bindParam(':sid', $_SESSION['id'], PDO::PARAM_STR);
+      			$stmt->bindParam(':rso_name', $_POST['rso_name'], PDO::PARAM_STR);
+      			$stmt->execute();
 
             $owns_rso_sql = "INSERT INTO owns_rso(admin_id, rso_name) VALUES (:admin_id, :rso_name)";
             $owns_rso_stmt = $pdo->prepare($owns_rso_sql);
@@ -242,11 +242,7 @@ if(!empty($_POST)) {
           $stmt = $pdo->prepare($sql);
           $stmt->bindParam('rso_name', $_POST['rso_name']);
           $stmt->execute();
-          $sql = "DELETE FROM affiliates_rso WHERE rso_name = :rso_name";
-          $stmt = $pdo->prepare($sql);
-          $stmt->bindParam('rso_name', $_POST['rso_name']);
-          $stmt->execute();
-          $sql = "DELETE FROM joins_rso WHERE rso_name = :rso_name"; // I have no idea why there is an affiliates_rso and joins_rso... o.O
+          $sql = "DELETE FROM joins_rso WHERE rso_name = :rso_name";
           $stmt = $pdo->prepare($sql);
           $stmt->bindParam('rso_name', $_POST['rso_name']);
           $stmt->execute();

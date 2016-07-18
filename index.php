@@ -137,8 +137,10 @@ EOD;
 
 
 
-						if (isset($_SESSION['message']))
-							echo '<br><p>' . $_SESSION['message'] . '</p>'
+						if (isset($_SESSION['message']) &&  $_SESSION['message'] != '') {
+							echo '<br><p>' . $_SESSION['message'] . '</p>';
+							$_SESSION['message'] = '';
+						}
 
 						?>
 
